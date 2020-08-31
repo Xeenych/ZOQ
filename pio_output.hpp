@@ -12,10 +12,10 @@ namespace ZOQ::Stm32f1xx_hal {
 		return (state == pinState::Set)? GPIO_PIN_SET : GPIO_PIN_RESET;
 	}
 	
-	class pio {
+	class pio_output {
 	public:
-		inline pio ( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x);
-		inline pio ( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x, pinState initial_state, uint32_t Mode, uint32_t Pull, uint32_t Speed);
+		inline pio_output ( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x);
+		inline pio_output ( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x, pinState initial_state, uint32_t Mode, uint32_t Pull, uint32_t Speed);
 		inline void set() const;
 		inline void reset() const;
 		inline pinState read() const;
@@ -28,7 +28,7 @@ namespace ZOQ::Stm32f1xx_hal {
 		uint16_t const gpio_pin;
 	};
 	
-	pio::pio( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x, pinState initial_state, uint32_t Mode, uint32_t Pull, uint32_t Speed)
+	pio_output::pio_output( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x, pinState initial_state, uint32_t Mode, uint32_t Pull, uint32_t Speed)
 		:gpio_port(GPIOx), gpio_pin(GPIO_PIN_x) 
 		{
 			auto sss = convert(initial_state);
@@ -43,7 +43,7 @@ namespace ZOQ::Stm32f1xx_hal {
 			HAL_GPIO_Init(gpio_port, &GPIO_InitStruct);
 		};
 		
-	pio::pio( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x) 
+	pio_output::pio_output( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x) 
 		:gpio_port(GPIOx), gpio_pin(GPIO_PIN_x) 
 		{	
 			HAL_GPIO_WritePin(gpio_port, gpio_pin, GPIO_PIN_RESET);
@@ -57,15 +57,15 @@ namespace ZOQ::Stm32f1xx_hal {
 			HAL_GPIO_Init(gpio_port, &GPIO_InitStruct);
 		}
 	
-	void pio::reset() const {
+	void pio_output::reset() const {
     	HAL_GPIO_WritePin(gpio_port, gpio_pin, GPIO_PIN_RESET);
 	}
 
-	void pio::set() const {
+	void pio_output::set() const {
 		HAL_GPIO_WritePin(gpio_port, gpio_pin, GPIO_PIN_SET);
 	}
 	
-	pinState pio::read() const {
+	pinState pio_output::read() const {
 		auto res = HAL_GPIO_ReadPin(gpio_port, gpio_pin);
 		return (res == GPIO_PIN_SET)? pinState::Set : pinState::Reset;
 	}
