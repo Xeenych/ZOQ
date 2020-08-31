@@ -1,7 +1,6 @@
 #pragma once
 #include "pio_defs.hpp"
 
-
 namespace ZOQ::Stm32f1xx_hal {
 
 	class pio_output {
