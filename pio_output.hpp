@@ -1,17 +1,10 @@
 #pragma once
+#include "pio_defs.hpp"
 #include "stm32f1xx_hal.h"
 
 namespace ZOQ::Stm32f1xx_hal {
 	
-	enum class pinState {
-		Reset = GPIO_PIN_RESET,
-		Set = GPIO_PIN_SET
-	};
-	
-	inline GPIO_PinState convert(pinState state) {
-		return (state == pinState::Set)? GPIO_PIN_SET : GPIO_PIN_RESET;
-	}
-	
+
 	class pio_output {
 	public:
 		inline pio_output ( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x);
