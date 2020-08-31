@@ -3,7 +3,7 @@
 
 namespace ZOQ::Stm32f1xx_hal {
 
-	class pioa {
+	class pioa final {
 	public:
 		pioa() = delete;
 		~pioa() = delete;
@@ -18,7 +18,7 @@ namespace ZOQ::Stm32f1xx_hal {
 		}
 	};
 	
-	class piob {
+	class piob final {
 	public:
 		piob() = delete;
 		~piob() = delete;
@@ -33,7 +33,7 @@ namespace ZOQ::Stm32f1xx_hal {
 		}
 	};
 	
-	class pioc {
+	class pioc final {
 	public:
 		pioc() = delete;
 		~pioc() = delete;
@@ -48,7 +48,7 @@ namespace ZOQ::Stm32f1xx_hal {
 		}
 	};	
 	
-	class piod {
+	class piod final {
 	public:
 		piod() = delete;
 		~piod() = delete;
@@ -63,7 +63,7 @@ namespace ZOQ::Stm32f1xx_hal {
 		}
 	};
 	
-	class pioe {
+	class pioe final {
 	public:
 		pioe() = delete;
 		~pioe() = delete;
@@ -79,7 +79,7 @@ namespace ZOQ::Stm32f1xx_hal {
 	};
 	
 	#ifdef GPIOF
-	class piof {
+	class piof final {
 	public:
 		piof() = delete;
 		~piof() = delete;
@@ -96,7 +96,7 @@ namespace ZOQ::Stm32f1xx_hal {
 	#endif
 	
 	#ifdef GPIOG
-	class piog {
+	class piog final {
 	public:
 		piog() = delete;
 		~piog() = delete;
@@ -113,7 +113,7 @@ namespace ZOQ::Stm32f1xx_hal {
 	#endif	
 
 	#ifdef GPIOH
-	class piog {
+	class piog final {
 	public:
 		pioh() = delete;
 		~pioh() = delete;
