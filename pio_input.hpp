@@ -5,9 +5,9 @@ namespace ZOQ::Stm32f1xx_hal {
 
 	class pio_input {
 	public:
-		inline pio_input ( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x);
-		inline pinState read() const;
-		inline ~pio_input();
+		inline pio_input ( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x) ;
+		inline pinState read() const ;
+		inline ~pio_input() ;
 	private:
 		GPIO_TypeDef* const gpio_port;
 		uint16_t const gpio_pin;
@@ -30,7 +30,7 @@ namespace ZOQ::Stm32f1xx_hal {
 		HAL_GPIO_DeInit(gpio_port, gpio_pin);
 	}
 
-	pinState pio_input::read() const {
+	pinState pio_input::read() const  {
 		auto res = HAL_GPIO_ReadPin(gpio_port, gpio_pin);
 		return (res == GPIO_PIN_SET)? pinState::Set : pinState::Reset;
 	}
