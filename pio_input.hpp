@@ -3,14 +3,15 @@
 
 namespace ZOQ::Stm32f1xx_hal {
 
-class pio_input {
-public:
-	inline pio_input ( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x);
-	inline pinState read() const;
-private:
-	GPIO_TypeDef* const gpio_port;
-	uint16_t const gpio_pin;
-};
+	class pio_input {
+	public:
+		inline pio_input ( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x);
+		inline pinState read() const;
+		inline ~pio_input();
+	private:
+		GPIO_TypeDef* const gpio_port;
+		uint16_t const gpio_pin;
+	};
 
 	pio_input::pio_input( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x) 
 		:gpio_port(GPIOx), gpio_pin(GPIO_PIN_x) 
@@ -24,6 +25,10 @@ private:
 			};
 			HAL_GPIO_Init(gpio_port, &GPIO_InitStruct);
 		}
+	
+	pio_input::~pio_input() {
+		HAL_GPIO_DeInit(gpio_port, gpio_pin);
+	}
 
 	pinState pio_input::read() const {
 		auto res = HAL_GPIO_ReadPin(gpio_port, gpio_pin);

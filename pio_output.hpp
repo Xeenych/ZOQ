@@ -1,9 +1,8 @@
 #pragma once
 #include "pio_defs.hpp"
-#include "stm32f1xx_hal.h"
+
 
 namespace ZOQ::Stm32f1xx_hal {
-	
 
 	class pio_output {
 	public:
@@ -12,10 +11,7 @@ namespace ZOQ::Stm32f1xx_hal {
 		inline void set() const;
 		inline void reset() const;
 		inline pinState read() const;
-		//inline static void GPIOA_CLK_ENABLE();
-		//inline static void GPIOB_CLK_ENABLE();
-		//inline static void GPIOC_CLK_ENABLE();
-		//inline static void GPIOD_CLK_ENABLE();
+		inline ~pio_output();
 	private:
 		GPIO_TypeDef* const gpio_port;
 		uint16_t const gpio_pin;
@@ -35,6 +31,10 @@ namespace ZOQ::Stm32f1xx_hal {
 			};
 			HAL_GPIO_Init(gpio_port, &GPIO_InitStruct);
 		};
+		
+	pio_output::~pio_output() {
+		HAL_GPIO_DeInit(gpio_port, gpio_pin);
+	}
 		
 	pio_output::pio_output( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x) 
 		:gpio_port(GPIOx), gpio_pin(GPIO_PIN_x) 
