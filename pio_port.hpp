@@ -28,4 +28,14 @@ inline void pio_port<portname::PB>::CLK_ENABLE() {
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 }
 
+template <>
+inline void pio_port<portname::PC>::CLK_ENABLE() {
+	__HAL_RCC_GPIOC_CLK_ENABLE();
+}
+
+template <>
+inline void pio_port<portname::PD>::CLK_ENABLE() {
+	__HAL_RCC_GPIOD_CLK_ENABLE();
+}
+
 } // namespace
