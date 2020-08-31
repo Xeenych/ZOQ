@@ -4,22 +4,22 @@
 namespace ZOQ::Stm32f1xx_hal {
 	class uart {
 	public:
-		inline uart(USART_TypeDef* instance, const UART_InitTypeDef& init) ;
-		inline ~uart() ;
-		inline HAL_StatusTypeDef transmit(uint8_t *pData, uint16_t Size, uint32_t Timeout) ;
-		inline HAL_StatusTypeDef receive(uint8_t *pData, uint16_t Size, uint32_t Timeout) ;
+		inline uart(USART_TypeDef* instance, const UART_InitTypeDef& init);
+		inline ~uart();
+		inline HAL_StatusTypeDef transmit(uint8_t *pData, uint16_t Size, uint32_t Timeout);
+		inline HAL_StatusTypeDef receive(uint8_t *pData, uint16_t Size, uint32_t Timeout);
 	private:
 		UART_HandleTypeDef handle;
 
 	public:
 		template<int uart_num>
-		inline static void clk_enable() ;
+		inline static void clk_enable();
 		
 		template<int uart_num>
-		inline static bool is_clk_enabled() ;
+		inline static bool is_clk_enabled();
 		
 		template<int uart_num>
-		inline static void clk_disable() ;
+		inline static void clk_disable();
 		
 	}; // class
 	
