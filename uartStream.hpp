@@ -15,6 +15,7 @@ class uartStream : public ITextStream<uartStream<T>> {
 		size_t readString(char* buf, size_t size);
 		void setTimeOut(uint32_t new_timeout);
 		uint32_t getTimeOut() const;
+		void flush();
 	private:
 		uint32_t timeout;
 		T& uart;
@@ -56,7 +57,7 @@ class uartStream : public ITextStream<uartStream<T>> {
 	inline size_t uartStream<T>::readString(char* buf, size_t size) {
 		char* ptr = buf;
 		int num_ch = 0;
-
+		bool lineend_found = false;
 		uint8_t symbol;
 
 		while(ptr < buf + size) {
@@ -66,16 +67,27 @@ class uartStream : public ITextStream<uartStream<T>> {
 			*ptr = symbol;
 			ptr++;
 			num_ch++;
-			if ( symbol =='\r' || symbol == '\n')
+			if ( symbol =='\r') {
+				lineend_found = true;
 				break;
+			}
 		}
+
 		*ptr = '\0';
+
+		if (!lineend_found)
+			return 0;
 		return num_ch;
+	}
+
+	template<typename T>
+	inline void uartStream<T>::flush() {
+		uart.flush();
 	}
 
 template<typename T>
 static uartStream<T> make_uartStream(T& uart) {
 	return (uartStream<T>(uart));
 }
-			
+
 } // namespace

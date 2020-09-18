@@ -13,6 +13,7 @@ namespace ZOQ::Stm32_HAL {
 		size_t transmit(uint8_t *pData, uint16_t Size, uint32_t Timeout);
 		size_t receive(uint8_t *pData, uint16_t Size, uint32_t Timeout);
 		size_t bytes_available() const;
+		void flush();
 	private:
 		UART_HandleTypeDef* const handle;
 		uint8_t* const rxbuffer;
@@ -35,6 +36,8 @@ namespace ZOQ::Stm32_HAL {
 		friend void ::HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart);
 		friend void ::HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 	}; // class
+
+
 
 
 	inline void hal_uart_dma::TxCpltCallback() {
@@ -68,7 +71,7 @@ namespace ZOQ::Stm32_HAL {
 		default:
 			break;
 		}
-		
+
 		auto result = HAL_UART_Receive_DMA(handle, rxbuffer, rxbuffer_size);
 		assert(result == HAL_OK);	// define NDEBUG to remove this assert
 	}
@@ -127,5 +130,16 @@ namespace ZOQ::Stm32_HAL {
 				read_ptr = rxbuffer;
 		}
 		return bytes_copied;
+	}
+
+	inline void hal_uart_dma::flush() {
+		HAL_UART_AbortReceive(handle);
+		handle->hdmarx->Instance->CNDTR = rxbuffer_size;
+		read_ptr = rxbuffer;
+		auto available = bytes_available();
+		assert (available == 0);
+
+		auto result = HAL_UART_Receive_DMA(handle, rxbuffer, rxbuffer_size);
+		assert (result == HAL_OK);	// define NDEBUG to remove this assert
 	}
 }
