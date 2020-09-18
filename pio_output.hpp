@@ -1,64 +1,56 @@
 #pragma once
-#include "pio_defs.hpp"
+#include "pio_common.hpp"
 
-namespace ZOQ::Stm32f1xx_hal {
+namespace ZOQ::Stm32_HAL {
 
 	class pio_output {
 	public:
-		inline pio_output ( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x) ;
-		inline pio_output ( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x, pinState initial_state, uint32_t Mode, uint32_t Pull, uint32_t Speed) ;
+		inline pio_output ( Pin const& p, 
+						   pinState initial_state = pinState::Reset, 
+						   uint32_t Mode = GPIO_MODE_OUTPUT_PP, 
+						   uint32_t Pull = GPIO_NOPULL, 
+						   uint32_t Speed = GPIO_SPEED_FREQ_LOW) ;
 		inline void set() const ;
 		inline void reset() const ;
+		inline void set(pinState state) const;
 		inline pinState read() const ;
 		inline ~pio_output() ;
 	private:
-		GPIO_TypeDef* const gpio_port;
-		uint16_t const gpio_pin;
+		Pin const& pin;
 	};
 	
-	pio_output::pio_output( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x, pinState initial_state, uint32_t Mode, uint32_t Pull, uint32_t Speed) 
-		:gpio_port(GPIOx), gpio_pin(GPIO_PIN_x) 
+	pio_output::pio_output( Pin const& p, pinState initial_state, uint32_t Mode, uint32_t Pull, uint32_t Speed) 
+		: pin(p)
 		{
-			auto sss = convert(initial_state);
-			HAL_GPIO_WritePin(gpio_port, gpio_pin, sss);
+			set(initial_state);
+			
 			GPIO_InitTypeDef GPIO_InitStruct = 
 			{
-				.Pin = GPIO_PIN_x,
+				.Pin = pin.pin,
 				.Mode = Mode,
 				.Pull = Pull,
 				.Speed = Speed
 			};
-			HAL_GPIO_Init(gpio_port, &GPIO_InitStruct);
+			HAL_GPIO_Init(pin.port, &GPIO_InitStruct);
 		};
 		
 	pio_output::~pio_output() {
-		HAL_GPIO_DeInit(gpio_port, gpio_pin);
+		HAL_GPIO_DeInit(pin.port, pin.pin);
 	}
-		
-	pio_output::pio_output( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x)
-		:gpio_port(GPIOx), gpio_pin(GPIO_PIN_x) 
-		{	
-			HAL_GPIO_WritePin(gpio_port, gpio_pin, GPIO_PIN_RESET);
-			GPIO_InitTypeDef GPIO_InitStruct = 
-			{
-				.Pin = GPIO_PIN_x,
-				.Mode = GPIO_MODE_OUTPUT_PP,
-				.Pull = GPIO_NOPULL,
-				.Speed = GPIO_SPEED_FREQ_LOW
-			};
-			HAL_GPIO_Init(gpio_port, &GPIO_InitStruct);
-		}
 	
 	void pio_output::reset() const {
-    	HAL_GPIO_WritePin(gpio_port, gpio_pin, GPIO_PIN_RESET);
+		setPin(pin, pinState::Reset);
 	}
 
 	void pio_output::set() const  {
-		HAL_GPIO_WritePin(gpio_port, gpio_pin, GPIO_PIN_SET);
+		setPin(pin, pinState::Set);
+	}
+	
+	void pio_output::set(pinState state) const {
+		setPin(pin, state);
 	}
 	
 	pinState pio_output::read() const  {
-		auto res = HAL_GPIO_ReadPin(gpio_port, gpio_pin);
-		return (res == GPIO_PIN_SET)? pinState::Set : pinState::Reset;
+		return getPinState(pin);
 	}
 }	// namespace

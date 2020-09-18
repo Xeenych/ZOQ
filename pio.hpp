@@ -1,5 +1,5 @@
 #pragma once
-#include "stm32f1xx_hal.h"
+#include "zoq_conf.hpp"
 
 namespace ZOQ::Stm32f1xx_hal {
 
@@ -17,7 +17,7 @@ namespace ZOQ::Stm32f1xx_hal {
 			return __HAL_RCC_GPIOA_IS_CLK_ENABLED();
 		}
 	};
-	
+
 	class piob final {
 	public:
 		piob() = delete;
@@ -32,7 +32,7 @@ namespace ZOQ::Stm32f1xx_hal {
 			return __HAL_RCC_GPIOB_IS_CLK_ENABLED();
 		}
 	};
-	
+
 	class pioc final {
 	public:
 		pioc() = delete;
@@ -46,8 +46,8 @@ namespace ZOQ::Stm32f1xx_hal {
 		static inline bool is_clk_enabled() {
 			return __HAL_RCC_GPIOC_IS_CLK_ENABLED();
 		}
-	};	
-	
+	};
+
 	class piod final {
 	public:
 		piod() = delete;
@@ -62,7 +62,7 @@ namespace ZOQ::Stm32f1xx_hal {
 			return __HAL_RCC_GPIOD_IS_CLK_ENABLED();
 		}
 	};
-	
+	#ifdef GPIOE
 	class pioe final {
 	public:
 		pioe() = delete;
@@ -77,7 +77,8 @@ namespace ZOQ::Stm32f1xx_hal {
 			return __HAL_RCC_GPIOE_IS_CLK_ENABLED();
 		}
 	};
-	
+	#endif
+
 	#ifdef GPIOF
 	class piof final {
 	public:
@@ -92,9 +93,9 @@ namespace ZOQ::Stm32f1xx_hal {
 		static inline bool is_clk_enabled() {
 			return __HAL_RCC_GPIOF_IS_CLK_ENABLED();
 		}
-	};	
+	};
 	#endif
-	
+
 	#ifdef GPIOG
 	class piog final {
 	public:
@@ -109,11 +110,11 @@ namespace ZOQ::Stm32f1xx_hal {
 		static inline bool is_clk_enabled() {
 			return __HAL_RCC_GPIOG_IS_CLK_ENABLED();
 		}
-	};	
-	#endif	
+	};
+	#endif
 
 	#ifdef GPIOH
-	class piog final {
+	class pioh final {
 	public:
 		pioh() = delete;
 		~pioh() = delete;
@@ -126,7 +127,7 @@ namespace ZOQ::Stm32f1xx_hal {
 		static inline bool is_clk_enabled() {
 			return __HAL_RCC_GPIOH_IS_CLK_ENABLED();
 		}
-	};	
-	#endif	
+	};
+	#endif
 
 } // namespace

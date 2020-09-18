@@ -1,38 +1,36 @@
 #pragma once
-#include "pio_defs.hpp"
+#include "pio_common.hpp"
 
-namespace ZOQ::Stm32f1xx_hal {
+namespace ZOQ::Stm32_HAL {
 
 	class pio_input {
 	public:
-		inline pio_input ( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x) ;
+		inline pio_input ( Pin const& p, uint32_t Pull = GPIO_NOPULL) ;
 		inline pinState read() const ;
 		inline ~pio_input() ;
 	private:
-		GPIO_TypeDef* const gpio_port;
-		uint16_t const gpio_pin;
+		Pin const& pin;
 	};
 
-	pio_input::pio_input( GPIO_TypeDef* GPIOx, uint16_t GPIO_PIN_x) 
-		:gpio_port(GPIOx), gpio_pin(GPIO_PIN_x) 
-		{	
-			GPIO_InitTypeDef GPIO_InitStruct = 
+	pio_input::pio_input( Pin const& p, uint32_t Pull)
+		: pin(p)
+		{
+			GPIO_InitTypeDef GPIO_InitStruct =
 			{
-				.Pin = GPIO_PIN_x,
+				.Pin = pin.pin,
 				.Mode = GPIO_MODE_INPUT,
-				.Pull = GPIO_NOPULL,
+				.Pull = Pull,
 				.Speed = GPIO_SPEED_FREQ_LOW
 			};
-			HAL_GPIO_Init(gpio_port, &GPIO_InitStruct);
+			HAL_GPIO_Init(pin.port, &GPIO_InitStruct);
 		}
-	
+
 	pio_input::~pio_input() {
-		HAL_GPIO_DeInit(gpio_port, gpio_pin);
+		HAL_GPIO_DeInit(pin.port, pin.pin);
 	}
 
 	pinState pio_input::read() const  {
-		auto res = HAL_GPIO_ReadPin(gpio_port, gpio_pin);
-		return (res == GPIO_PIN_SET)? pinState::Set : pinState::Reset;
+		return getPinState(pin);
 	}
 
 } // namespace
