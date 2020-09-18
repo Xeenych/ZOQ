@@ -32,3 +32,5 @@
 
 #include "ModProtocol\ModProtocol.hpp"
 #include "ModProtocol\Encoder.hpp"
+
+#include "cyclicbufferT.hpp"
