@@ -78,13 +78,13 @@ namespace ZOQ::Stm32_HAL {
 
 	inline size_t hal_uart_dma::transmit(uint8_t *pData, uint16_t Size, uint32_t Timeout) {
 
-
 		uint32_t tickstart = HAL_GetTick();
 		while (handle->gState != HAL_UART_STATE_READY) {
 			if (Timeout != HAL_MAX_DELAY)
       			if ((Timeout == 0U) || ((HAL_GetTick() - tickstart) > Timeout))
 					return 0;
 		}
+
 		size_t to_copy = (Size > txbuffer_size)? txbuffer_size : Size;
 		memcpy(txbuffer, pData, to_copy);
 
