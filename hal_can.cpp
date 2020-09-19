@@ -19,11 +19,11 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 	auto instance = hal_can::select_instance(hcan);
 	if (instance == nullptr)
 		 return;
-	
+
 	auto msg_result = instance->readMessage(msg);
 	if (msg_result == false)
 		return;
-	
+
 	instance->OnMessageReceived(msg);
 }
 
