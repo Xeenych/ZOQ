@@ -4,7 +4,7 @@ namespace ZOQ::Stm32_HAL {
 
 	struct Pin {
 		GPIO_TypeDef* port;
-		uint8_t pin;
+		uint8_t pin_num;
 	};
 
 	enum class pinState {

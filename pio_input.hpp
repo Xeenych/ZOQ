@@ -17,7 +17,7 @@ namespace ZOQ::Stm32_HAL {
 		{
 			GPIO_InitTypeDef GPIO_InitStruct =
 			{
-				.Pin = (uint32_t)(1<<pin.pin),
+				.Pin = (uint32_t)(1<<pin.pin_num),
 				.Mode = GPIO_MODE_INPUT,
 				.Pull = Pull,
 				.Speed = GPIO_SPEED_FREQ_LOW
@@ -26,7 +26,7 @@ namespace ZOQ::Stm32_HAL {
 		}
 
 	pio_input::~pio_input() {
-		HAL_GPIO_DeInit(pin.port, pin.pin);
+		HAL_GPIO_DeInit(pin.port, pin.pin_num);
 	}
 
 	pinState pio_input::read() const  {
