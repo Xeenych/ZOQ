@@ -7,9 +7,14 @@ namespace ZOQ::Stm32_HAL {
 		hal_uart(UART_HandleTypeDef* h);
 		size_t transmit(uint8_t *pData, uint16_t Size, uint32_t Timeout); // возвращает количество переданных байт
 		size_t receive(uint8_t *pData, uint16_t Size, uint32_t Timeout);
+		void flush();
 	private:
 		UART_HandleTypeDef* const handle;
 	}; // class
+
+	inline void hal_uart::flush() {
+		auto volatile tmp = handle->Instance->DR;
+	}
 
 	inline hal_uart::hal_uart(UART_HandleTypeDef* h) : handle(h) {
 	}
@@ -18,12 +23,12 @@ namespace ZOQ::Stm32_HAL {
 		auto res = HAL_UART_Transmit(handle, pData, Size, Timeout);
 		if (res == HAL_ERROR || res == HAL_BUSY)
 			return 0;
-		
+
 		if (res == HAL_TIMEOUT) {
 			auto transferred = Size - (handle->TxXferCount + 1);
 			return transferred;
 		}
-		
+
 		return Size;
 	}
 
@@ -31,12 +36,12 @@ namespace ZOQ::Stm32_HAL {
 		auto status = HAL_UART_Receive(handle, pData, Size, Timeout);
 		if (status == HAL_ERROR || status == HAL_BUSY)
 			return 0;
-		
+
 		if (status == HAL_TIMEOUT) {
 			auto received = Size - (handle->RxXferCount + 1);
 			return received;
 		}
-		
+
 		return Size;
 	}
 
