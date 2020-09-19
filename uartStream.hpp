@@ -1,9 +1,8 @@
 #pragma once
-//#include "stm32f1xx_hal.h"
 #include "hal_uart.hpp"
 #include "ITextStream.hpp"
 
-namespace ZOQ::Stm32f1xx_hal {
+namespace ZOQ::Stm32_HAL {
 
 template<typename T>
 class uartStream : public ITextStream<uartStream<T>> {

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace ZOQ::Stm32f1xx_hal {
+namespace ZOQ {
 
 	template <typename T>
 	class ITextStream {
