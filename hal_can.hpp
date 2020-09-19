@@ -12,34 +12,47 @@ namespace ZOQ::Stm32_HAL {
   		CAN_RxHeaderTypeDef header;
   		uint8_t data[8];
 	};
-	
+
 	using rx_callback_t = void (*)(CAN_RxMsg const& message);
-			
+
 	class hal_can {
-		
+
 	public:
 		hal_can(CAN_HandleTypeDef* hcan);
 		void ActivateDmaRx(rx_callback_t onMessageReceived);
+		void PauseNotification();
+		void ResumeNotification();
 		uint32_t messagesAvailable();
 		void configureFilters(CAN_FilterTypeDef* filter_config);
 		bool readMessage(CAN_RxMsg& msgout);
 		bool sendMessage(CAN_TxMsg& txmsg);
 		rx_callback_t OnMessageReceived = nullptr;
-		
+
 	private:
 		CAN_HandleTypeDef* const hcan;
 		static hal_can* hal_can1;
 		static hal_can* hal_can2;
 		static hal_can* select_instance(CAN_HandleTypeDef const* hcan);
-		
+
 		friend void ::HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan);
-		friend void ::HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan);		
+		friend void ::HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan);
 	};
-	
-	
+
+	inline void hal_can::PauseNotification() {
+		static const uint32_t ints = CAN_IT_RX_FIFO0_MSG_PENDING | CAN_IT_RX_FIFO1_MSG_PENDING;
+		auto r1 = HAL_CAN_DeactivateNotification(hcan, ints);
+		assert(r1 == HAL_OK);
+	}
+
+	inline void hal_can::ResumeNotification() {
+		static const uint32_t ints = CAN_IT_RX_FIFO0_MSG_PENDING | CAN_IT_RX_FIFO1_MSG_PENDING;
+		auto r1 = HAL_CAN_ActivateNotification(hcan, ints);
+		assert(r1 == HAL_OK);
+	}
+
 	inline void hal_can::ActivateDmaRx(rx_callback_t onMessageReceived) {
 		OnMessageReceived = onMessageReceived;
-		uint32_t ints = CAN_IT_RX_FIFO0_MSG_PENDING | CAN_IT_RX_FIFO1_MSG_PENDING;
+		static const uint32_t ints = CAN_IT_RX_FIFO0_MSG_PENDING | CAN_IT_RX_FIFO1_MSG_PENDING;
 		auto r1 = HAL_CAN_ActivateNotification(hcan, ints);
 		assert(r1 == HAL_OK);
 	}
@@ -49,7 +62,7 @@ namespace ZOQ::Stm32_HAL {
 			hal_can1 = this;
 		else if (_hcan->Instance == CAN2)
 			hal_can2 = this;
-			
+
 		HAL_CAN_Start(hcan);
 	}
 
