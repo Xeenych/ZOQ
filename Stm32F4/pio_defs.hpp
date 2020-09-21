@@ -12,7 +12,7 @@ namespace ZOQ::Stm32_HAL {
 	
 	inline pinSpeed getPinSpeed(Pin const& p) {
 		auto ospeedr = p.port->OSPEEDR;
-		auto bits = (ospeedr >> (p.pin << 1)) & 0x03;
+		auto bits = (ospeedr >> (p.pin_num << 1)) & 0x03;
 		pinSpeed mode = static_cast<pinSpeed>(bits);
 		return mode;
 	}
@@ -26,22 +26,22 @@ namespace ZOQ::Stm32_HAL {
 	
 	inline pinMode getPinMode(Pin const& p) {
 		auto moder = p.port->MODER;
-		auto bits = (moder >> (p.pin << 1)) & 0x03;
+		auto bits = (moder >> (p.pin_num << 1)) & 0x03;
 		pinMode mode = static_cast<pinMode>(bits);
 		return mode;
 	}
 	
 	inline pinState getPinState(Pin const& p) {
 		auto idr = p.port->IDR;
-		auto bit = idr & (0x01 << p.pin);
+		auto bit = idr & (0x01 << p.pin_num);
 		return (bit != 0) ? pinState::Set : pinState::Reset;
 	}
 	
 	inline void setPin(Pin const& p, pinState state) {
 		if(state != pinState::Reset)
-			p.port->BSRR = (1U<<p.pin);
+			p.port->BSRR = (1U<<p.pin_num);
   		else
-  			p.port->BSRR = static_cast<uint32_t>(1U<<p.pin) << 16U;
+  			p.port->BSRR = static_cast<uint32_t>(1U<<p.pin_num) << 16U;
 	}
 	
 }	// namespace

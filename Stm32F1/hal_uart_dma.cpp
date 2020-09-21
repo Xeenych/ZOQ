@@ -1,4 +1,4 @@
-#include "zoq.hpp"
+#include "../zoq.hpp"
 #include "hal_uart_dma.hpp"
 
 /*
