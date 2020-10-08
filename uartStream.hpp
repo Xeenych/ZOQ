@@ -1,4 +1,5 @@
 #pragma once
+#include <string.h>
 #include "hal_uart.hpp"
 #include "ITextStream.hpp"
 

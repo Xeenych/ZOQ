@@ -9,6 +9,7 @@
 #elif defined ( STM32F105xC )
 	#include "stm32f1xx_hal.h"
 	#include "Stm32F1/pio_defs.hpp"
+	#include "Stm32F1/hal_uart_dma.hpp"
 #endif
 
 
@@ -18,7 +19,6 @@
 #include "pio_input.hpp"
 #include "Hardware/contactor.hpp"
 #include "hal_uart.hpp"
-#include "hal_uart_dma.hpp"
 #include "hal_uartT.hpp"
 
 #ifdef HAL_CAN_MODULE_ENABLED
