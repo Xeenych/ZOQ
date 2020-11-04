@@ -27,6 +27,8 @@ namespace ZOQ::Stm32_HAL {
 		bool readMessage(CAN_RxMsg& msgout);
 		bool sendMessage(CAN_TxMsg& txmsg);
 		rx_callback_t OnMessageReceived = nullptr;
+		HAL_StatusTypeDef Stop();
+		HAL_StatusTypeDef Start();
 
 	private:
 		CAN_HandleTypeDef* const hcan;
@@ -57,6 +59,13 @@ namespace ZOQ::Stm32_HAL {
 		assert(r1 == HAL_OK);
 	}
 
+	inline HAL_StatusTypeDef hal_can::Stop() {
+		return HAL_CAN_Stop(hcan);
+	}
+	inline HAL_StatusTypeDef hal_can::Start() {
+		return HAL_CAN_Start(hcan);
+	}
+	
 	inline hal_can::hal_can(CAN_HandleTypeDef* _hcan) : hcan(_hcan) {
 		if (_hcan->Instance == CAN1)
 			hal_can1 = this;

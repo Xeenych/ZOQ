@@ -12,7 +12,7 @@ namespace ZOQ::Stm32f1xx_hal::rcc {
 		template<int uart_num>
 		inline static void clk_disable();
 		
-			#ifdef USART1
+		#ifdef USART1
 		template<>
 		inline void uart::clk_enable<1>()  {
 			__HAL_RCC_USART1_CLK_ENABLE();
