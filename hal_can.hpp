@@ -14,6 +14,7 @@ namespace ZOQ::Stm32_HAL {
 	};
 
 	using rx_callback_t = void (*)(CAN_RxMsg const& message);
+	using tx_callback_t = void (*)(CAN_TxMsg const& message);
 
 	class hal_can {
 
@@ -29,6 +30,7 @@ namespace ZOQ::Stm32_HAL {
 		rx_callback_t OnMessageReceived = nullptr;
 		HAL_StatusTypeDef Stop();
 		HAL_StatusTypeDef Start();
+		tx_callback_t OnSend = nullptr;
 
 	private:
 		CAN_HandleTypeDef* const hcan;
@@ -94,7 +96,9 @@ namespace ZOQ::Stm32_HAL {
 	}
 
 	inline bool hal_can::sendMessage(CAN_TxMsg& txmsg) {
-  		uint32_t unused_pTxMailbox;
+  		if (OnSend !=nullptr)
+			OnSend(txmsg);
+		uint32_t unused_pTxMailbox;
   		HAL_StatusTypeDef result = HAL_CAN_AddTxMessage(hcan, &txmsg.header, txmsg.data, &unused_pTxMailbox);
   		if (result == HAL_OK)
     		return true;
