@@ -1,25 +1,30 @@
 #include "debug_print.h"
 #include "hal_uart_it.hpp"
+#include "usart.h"
 
-static hal_uart_it* instance = nullptr;
+static hal_uart_it* instance2 = nullptr;
+//static hal_uart_it* instance1 = nullptr;
 
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-	instance->OnTxCplt();
+	instance2->OnTxCplt();
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-	instance->OnRxCplt();
+	//instance1->OnRxCplt();
+	instance2->OnRxCplt();
 }
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
-	instance->OnError();
+	//instance1->OnError();
+	instance2->OnError();
 }
 
 namespace ZOQ::Stm32_HAL {
 
 	hal_uart_it::hal_uart_it(UART_HandleTypeDef* h) : handle(h) {
-		instance = this;
+		if (h == &huart2)
+			instance2 = this;
 		auto status = HAL_UART_Receive_IT(handle, &tmp_rx, 1);
 	}
 
@@ -30,7 +35,7 @@ namespace ZOQ::Stm32_HAL {
 	}
 
 	void hal_uart_it::OnRxCplt() {
-		rx_buf.Push(instance->tmp_rx);
+		rx_buf.Push(tmp_rx);
 		HAL_UART_Receive_IT(handle, &tmp_rx, 1);
 	}
 
