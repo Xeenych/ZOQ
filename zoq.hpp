@@ -1,6 +1,7 @@
 #pragma once
 
-
+#include "cyclicbufferT.hpp"
+#include "debug_print.h"
 #include "zoq_conf.hpp"
 
 #if defined ( STM32F412Rx )
@@ -19,6 +20,7 @@
 #include "pio_input.hpp"
 #include "Hardware/contactor.hpp"
 #include "hal_uart.hpp"
+#include "hal_uart_it.hpp"
 #include "hal_uartT.hpp"
 
 #ifdef HAL_CAN_MODULE_ENABLED
@@ -32,5 +34,3 @@
 
 #include "ModProtocol\ModProtocol.hpp"
 #include "ModProtocol\Encoder.hpp"
-
-#include "cyclicbufferT.hpp"
