@@ -10,7 +10,7 @@ public:
   	size_t Capacity() const;
   	bool Push(const T& item);
   	size_t Push(T const* items, size_t item_count);
-  	bool Pop(const T& item);
+  	bool Pop(T& item);
   	void Remove(size_t n);
   	bool IsFull() const;
   	bool IsEmpty() const;
@@ -74,7 +74,7 @@ bool CyclicBufferT<T, SIZE>::Push(const T& item) {
 }
 
 template <typename T, size_t SIZE>
-bool CyclicBufferT<T, SIZE>::Pop(const T& item) {
+bool CyclicBufferT<T, SIZE>::Pop(T& item) {
   if (IsEmpty())
     return false;
   item = data[rp];
