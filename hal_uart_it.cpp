@@ -3,28 +3,52 @@
 #include "usart.h"
 
 static hal_uart_it* instance2 = nullptr;
-//static hal_uart_it* instance1 = nullptr;
+static hal_uart_it* instance1 = nullptr;
 
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-	instance2->OnTxCplt();
+	auto in = hal_uart_it::select_instance(huart);
+	if (in == nullptr)
+		return;
+	in->OnTxCplt();
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-	//instance1->OnRxCplt();
-	instance2->OnRxCplt();
+	auto in = hal_uart_it::select_instance(huart);
+	if (in == nullptr)
+		return;
+	in->OnRxCplt();
 }
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
-	//instance1->OnError();
-	instance2->OnError();
+	auto in = hal_uart_it::select_instance(huart);
+	if (in == nullptr)
+		return;
+	in->OnError();
 }
 
 namespace ZOQ::Stm32_HAL {
 
+	hal_uart_it* hal_uart_it::select_instance(UART_HandleTypeDef const* h) {
+		switch ((uint32_t)(h->Instance)) {
+			case (uint32_t)USART1:
+				return instance1;
+			case (uint32_t)USART2:
+				return instance2;
+			default:
+				return nullptr;
+		}
+	}
+
 	hal_uart_it::hal_uart_it(UART_HandleTypeDef* h) : handle(h) {
-		if (h == &huart2)
-			instance2 = this;
+		switch ((uint32_t)(h->Instance)) {
+			case (uint32_t)USART1:
+				instance1 = this;
+				break;
+			case (uint32_t)USART2:
+				instance2 = this;
+				break;
+		}
 		auto status = HAL_UART_Receive_IT(handle, &tmp_rx, 1);
 	}
 
