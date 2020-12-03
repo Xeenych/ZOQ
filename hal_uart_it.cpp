@@ -53,13 +53,17 @@ namespace ZOQ::Stm32_HAL {
 	}
 
 	void hal_uart_it::OnTxCplt() {
+		HAL_NVIC_DisableIRQ(USART2_IRQn);
 		auto res = tx_buf.Pop(tmp_tx);
+		HAL_NVIC_EnableIRQ(USART2_IRQn);
 		if (res)
 			HAL_UART_Transmit_IT(handle, &tmp_tx, 1);
 	}
 
 	void hal_uart_it::OnRxCplt() {
+		HAL_NVIC_DisableIRQ(USART2_IRQn);
 		rx_buf.Push(tmp_rx);
+		HAL_NVIC_EnableIRQ(USART2_IRQn);
 		HAL_UART_Receive_IT(handle, &tmp_rx, 1);
 	}
 
@@ -74,26 +78,50 @@ namespace ZOQ::Stm32_HAL {
 			return size;
 
 		uint32_t count = 0;
-		while (!tx_buf.IsFull() && (size > 0)) {
+
+
+		while (size > 0) {
 			HAL_NVIC_DisableIRQ(USART2_IRQn);
-			tx_buf.Push(*pData++);
+			auto res = tx_buf.Push(*pData);
 			HAL_NVIC_EnableIRQ(USART2_IRQn);
+
+			if ( !res )
+				break;
+			pData++;
 			size--;
 			count++;
 		}
-		OnTxCplt();
+
+
+		// Проверяем идет ли передача
+		HAL_NVIC_DisableIRQ(USART2_IRQn);
+		auto state = HAL_UART_GetState(handle);
+		HAL_NVIC_EnableIRQ(USART2_IRQn);
+
+		if ( (state != HAL_UART_STATE_BUSY_TX)  && (state != HAL_UART_STATE_BUSY_TX_RX) ) {
+			OnTxCplt(); // Предыдущая передача закончилась, надо начать новую
+		}
+
 		return count;
 	}
 
 	uint16_t hal_uart_it::receive(uint8_t *pData, uint16_t size) {
 		uint32_t count = 0;
-		while (!rx_buf.IsEmpty() && (size > 0)) {
+
+
+		while (size > 0) {
 			HAL_NVIC_DisableIRQ(USART2_IRQn);
-			rx_buf.Pop(*pData++);
+			auto res = rx_buf.Pop(*pData++);
 			HAL_NVIC_EnableIRQ(USART2_IRQn);
+
+			if (!res)
+				break;
+
+			pData++;
 			size--;
 			count++;
 		}
+
 
 		return count;
 	}
