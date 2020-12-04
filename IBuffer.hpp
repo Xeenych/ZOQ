@@ -11,7 +11,7 @@ namespace ZOQ {
 		inline size_t read(void* buf, size_t len);
 		inline size_t advance(size_t len);
 		inline void* data() const;
-		inline size_t data_len() const;
+		inline size_t len() const;
 	private:
 		size_t size;
 		uint8_t* data_ptr;
@@ -34,7 +34,7 @@ namespace ZOQ {
 		return data_ptr;
 	}
 
-	size_t oBuffer::data_len() const {
+	size_t oBuffer::len() const {
 		return size;
 	}
 
@@ -49,7 +49,7 @@ namespace ZOQ {
 	template <typename oB, typename iW>
 	inline size_t operator>>(oB& b, iW& w) {
 		auto data = b.data();
-		auto data_len = b.data_len();
+		auto data_len = b.len();
 		auto written = w.write(data, data_len);
 		b.advance(written);
 		return written;
