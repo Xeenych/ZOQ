@@ -4,7 +4,7 @@
 
 namespace ZOQ::Stm32_HAL {
 
-	class hal_uart_it : public IBuffer {
+	class hal_uart_it : public IReadWrite {
 	public:
 		hal_uart_it(UART_HandleTypeDef* h);
 		size_t write(void *pData, size_t size) override; // возвращает количество переданных байт
