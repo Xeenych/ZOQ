@@ -4,11 +4,11 @@
 
 namespace ZOQ::Stm32_HAL {
 
-	class hal_uart_it {
+	class hal_uart_it : public IBuffer {
 	public:
 		hal_uart_it(UART_HandleTypeDef* h);
-		uint16_t transmit(uint8_t *pData, uint16_t Size); // возвращает количество переданных байт
-		uint16_t receive(uint8_t *pData, uint16_t Size);
+		size_t write(void *pData, size_t size) override; // возвращает количество переданных байт
+		size_t read(void *pData, size_t size) override;
 	private:
 		UART_HandleTypeDef* const handle;
 		CyclicBufferT<uint8_t, 100> rx_buf;

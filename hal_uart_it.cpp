@@ -72,13 +72,13 @@ namespace ZOQ::Stm32_HAL {
 	}
 
 
-	uint16_t hal_uart_it::transmit(uint8_t *pData, uint16_t size) {
+	size_t hal_uart_it::write(void *_pData, size_t size) {
 
 		if (size == 0)
 			return size;
 
 		uint32_t count = 0;
-
+		uint8_t* pData = static_cast<uint8_t*>(_pData);
 
 		while (size > 0) {
 			HAL_NVIC_DisableIRQ(USART2_IRQn);
@@ -105,9 +105,10 @@ namespace ZOQ::Stm32_HAL {
 		return count;
 	}
 
-	uint16_t hal_uart_it::receive(uint8_t *pData, uint16_t size) {
-		uint32_t count = 0;
+	size_t hal_uart_it::read(void* _pData, size_t size) {
 
+		uint32_t count = 0;
+		uint8_t* pData = static_cast<uint8_t*>(_pData);
 
 		while (size > 0) {
 			HAL_NVIC_DisableIRQ(USART2_IRQn);

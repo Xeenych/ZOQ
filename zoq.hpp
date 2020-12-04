@@ -4,6 +4,7 @@
 #include "debug_print.h"
 #include "zoq_conf.hpp"
 #include "timeout_timer.hpp"
+#include "IBuffer.hpp"
 
 #if defined ( STM32F412Rx )
 	#include "stm32f4xx_hal.h"
