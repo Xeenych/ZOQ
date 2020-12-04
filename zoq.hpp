@@ -5,7 +5,7 @@
 #include "zoq_conf.hpp"
 #include "timeout_timer.hpp"
 #include "IReadWrite.hpp"
-#include "IBuffer.hpp"
+#include "Bufreader.hpp"
 
 #if defined ( STM32F412Rx )
 	#include "stm32f4xx_hal.h"
