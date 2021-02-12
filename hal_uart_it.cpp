@@ -1,6 +1,5 @@
 #include "debug_print.h"
 #include "hal_uart_it.hpp"
-#include "usart.h"
 
 static hal_uart_it* instance2 = nullptr;
 static hal_uart_it* instance1 = nullptr;
