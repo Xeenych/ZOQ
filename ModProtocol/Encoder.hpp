@@ -9,7 +9,7 @@ namespace ZOQ::ModProtocol {
 		bool Start();
 		bool Encode(uint8_t const* chunk, size_t chunksize);
 		bool Finish();
-		size_t Len() const ;
+		size_t Len() const;
 	private:
 		uint8_t* const buf;
 		size_t const size;

@@ -121,8 +121,6 @@ namespace ZOQ::Stm32_HAL {
 			size--;
 			count++;
 		}
-
-
 		return count;
 	}
 }
