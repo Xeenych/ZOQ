@@ -6,4 +6,6 @@ namespace ZOQ::ModProtocol {
 	static const constexpr uint8_t FEND = '\n';
 	static const constexpr uint8_t FSTART = ':';
 	static const constexpr uint8_t LRCSTART = (-1);
+
+	uint8_t CodeToByte(uint8_t code);
 }
