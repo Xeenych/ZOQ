@@ -7,17 +7,23 @@ namespace ZOQ::ModProtocol {
 
 
 class Decoder {
+public:
+	class IDecoderCallback {
+	public:
+		virtual void Execute(uint8_t const* buf, size_t len) = 0;
+	};
+
 
 using callback_t = void (*)(uint8_t const* buf, size_t len);
 
 public:
-	Decoder(uint8_t* buf, size_t size, callback_t on_finish);
+	Decoder(uint8_t* buf, size_t size, IDecoderCallback& on_finish);
 	void Decode(uint8_t const* chunk, size_t chunksize);	// возвращает количество отбработанных символов
 
 private:
 	inline void reset();
 	inline void decode_symbol(uint8_t byte);
-	callback_t OnFinish;	// Колбэк, который вызывается при успешном декодировании посылки
+	IDecoderCallback& OnFinish;	// Колбэк, который вызывается при успешном декодировании посылки
 	uint8_t* const buf_start;
 	size_t const buf_size;
 	uint8_t* decoded_ptr;
@@ -26,7 +32,7 @@ private:
 	uint8_t current;
 };
 
-inline Decoder::Decoder (uint8_t* _buf, size_t _size, callback_t on_finish) :
+inline Decoder::Decoder (uint8_t* _buf, size_t _size, IDecoderCallback& on_finish) :
 	buf_start(_buf),
 	buf_size(_size),
 	lrc(LRCSTART),
@@ -44,10 +50,8 @@ inline void Decoder::decode_symbol(uint8_t symbol) {
 
 	if ( symbol == FEND ) {
 		if ( lrc == 0 ) {	// Приняли последний символ и сошлась контрольная сумма
-			if (OnFinish != nullptr) {
-				size_t decoded_len = decoded_ptr - buf_start - 1; // длина посылки без контрольной суммы
-				OnFinish(buf_start, decoded_len);
-			}
+			size_t decoded_len = decoded_ptr - buf_start - 1; // длина посылки без контрольной суммы
+			OnFinish.Execute(buf_start, decoded_len);
 		}
 		reset();
 		return;

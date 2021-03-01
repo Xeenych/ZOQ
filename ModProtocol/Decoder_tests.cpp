@@ -7,6 +7,18 @@ uint32_t on_finish_called_times = 0;
 uint8_t const* result = nullptr;
 size_t result_len = 0;
 
+class CB : public Decoder::IDecoderCallback {
+public:
+	void Execute(uint8_t const* buf, size_t len) override {
+		on_finish_called_times++;
+		result = buf;
+		result_len = len;
+	}
+};
+
+
+CB on_finish;
+
 
 TEST_GROUP(ModProtocol_Decoder);
 TEST_SETUP(ModProtocol_Decoder) {
@@ -21,11 +33,6 @@ const unsigned int buf_size = 100;
 unsigned char tmp[buf_size];
 
 
-void on_finish(uint8_t const* buf, size_t len) {
-	on_finish_called_times++;
-	result = buf;
-	result_len = len;
-}
 
 /*
  * Неправильная посылка. Колбэк не будет вызван
