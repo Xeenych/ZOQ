@@ -39,15 +39,15 @@ namespace ZOQ::Stm32_HAL {
 	}
 
 	void pio_output::reset() const {
-		setPin(pin, pinState::Reset);
+		setPin(this->pin, pinState::Reset);
 	}
 
-	void pio_output::set() const  {
-		setPin(pin, pinState::Set);
+	void pio_output::set() const {
+		setPin(this->pin, pinState::Set);
 	}
 
 	void pio_output::set(pinState state) const {
-		setPin(pin, state);
+		setPin(this->pin, state);
 	}
 
 	pinState pio_output::read() const  {
