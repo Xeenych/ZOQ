@@ -21,6 +21,8 @@ namespace ZOQ::Stm32_HAL {
 		void OnRxCplt();
 		void OnTxCplt();
 		void OnError();
+		void enable_irq();
+		void disable_irq();
 
 		friend void ::HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart);
 		friend void ::HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);

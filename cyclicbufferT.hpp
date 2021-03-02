@@ -28,7 +28,7 @@ private:
   	void advanceRP();
   	size_t wp = 0;
   	size_t rp = 0;
-  	T data[SIZE] = {0};
+  	T data[SIZE];
   	bool Ovf = false;
 };
 
