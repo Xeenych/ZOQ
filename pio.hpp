@@ -1,5 +1,6 @@
 #pragma once
 #include "zoq_conf.hpp"
+#include "stm32f1xx_hal.h"
 
 namespace ZOQ::Stm32f1xx_hal {
 

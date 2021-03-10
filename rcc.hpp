@@ -1,5 +1,4 @@
 #pragma once
-//#include "stm32f1xx_hal.h"
 namespace ZOQ::Stm32f1xx_hal::rcc {
 	
 	namespace uart {

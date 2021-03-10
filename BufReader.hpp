@@ -14,8 +14,8 @@ namespace ZOQ {
 		inline void* data() const;
 		inline size_t len() const;
 	private:
-		size_t size;
 		uint8_t* data_ptr;
+		size_t size;
 	};
 
 

@@ -13,8 +13,8 @@ namespace ZOQ::ModProtocol {
 	private:
 		uint8_t* const buf;
 		size_t const size;
-		uint8_t* ptr;
 		uint8_t lrc = LRCSTART;
+		uint8_t* ptr;
 	};
 	
 	inline Encoder::Encoder (uint8_t* _buf, size_t _size) : 

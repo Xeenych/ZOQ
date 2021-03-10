@@ -1,9 +1,9 @@
 #ifdef DEBUG_PRINT
 #include <stdio.h>
-#define DEBUG 1
+#define MYDEBUG 1
 #else
-#define DEBUG 0
+#define MYDEBUG 0
 #endif
 
 #define debug_print(...) \
-do { if (DEBUG) printf(__VA_ARGS__); } while (0)
+do { if (MYDEBUG) printf(__VA_ARGS__); } while (0)

@@ -71,8 +71,10 @@ namespace ZOQ::Stm32_HAL {
 	inline hal_can::hal_can(CAN_HandleTypeDef* _hcan) : hcan(_hcan) {
 		if (_hcan->Instance == CAN1)
 			hal_can1 = this;
+#ifdef CAN2
 		else if (_hcan->Instance == CAN2)
 			hal_can2 = this;
+#endif
 
 		HAL_CAN_Start(hcan);
 	}

@@ -10,7 +10,7 @@
 #if defined ( STM32F412Rx )
 	#include "stm32f4xx_hal.h"
 	#include "Stm32F4/pio_defs.hpp"
-#elif defined ( STM32F105xC )
+#elif defined ( STM32F1xx )
 	#include "stm32f1xx_hal.h"
 	#include "Stm32F1/pio_defs.hpp"
 	#include "Stm32F1/hal_uart_dma.hpp"
