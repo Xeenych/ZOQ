@@ -13,7 +13,7 @@ namespace ZOQ::Stm32_HAL {
 	}; // class
 
 	inline void hal_uart::flush() {
-		auto volatile tmp = handle->Instance->DR;
+		auto volatile tmp __attribute__((unused)) = handle->Instance->DR;
 	}
 
 	inline hal_uart::hal_uart(UART_HandleTypeDef* h) : handle(h) {

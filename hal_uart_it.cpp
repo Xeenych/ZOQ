@@ -4,7 +4,9 @@
 static hal_uart_it* instance1 = nullptr;
 static hal_uart_it* instance2 = nullptr;
 static hal_uart_it* instance3 = nullptr;
+#ifdef USART6_BASE
 static hal_uart_it* instance6 = nullptr;
+#endif
 
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
@@ -35,18 +37,20 @@ namespace ZOQ::Stm32_HAL {
 		
 		switch ((uint32_t)(handle->Instance)) 
 		{
-		case (uint32_t)USART1:
+		case (uint32_t)USART1_BASE:
 			irq = USART1_IRQn;
 			break;
-		case (uint32_t)USART2:
+		case (uint32_t)USART2_BASE:
 			irq = USART2_IRQn;
 			break;		
-		case (uint32_t)USART3:
+		case (uint32_t)USART3_BASE:
 			irq = USART3_IRQn;
 			break;		
-		case (uint32_t)USART6:
+#ifdef USART6_BASE
+		case (uint32_t)USART6_BASE:
 			irq = USART6_IRQn;
-			break;			
+			break;
+#endif
 		default:
 			return;
 		}
@@ -59,18 +63,20 @@ namespace ZOQ::Stm32_HAL {
 		
 		switch ((uint32_t)(handle->Instance)) 
 		{
-		case (uint32_t)USART1:
+		case (uint32_t)USART1_BASE:
 			irq = USART1_IRQn;
 			break;
-		case (uint32_t)USART2:
+		case (uint32_t)USART2_BASE:
 			irq = USART2_IRQn;
 			break;		
-		case (uint32_t)USART3:
+		case (uint32_t)USART3_BASE:
 			irq = USART3_IRQn;
 			break;		
-		case (uint32_t)USART6:
+#ifdef USART6_BASE
+		case (uint32_t)USART6_BASE:
 			irq = USART6_IRQn;
-			break;			
+			break;
+#endif
 		default:
 			return;
 		}		
@@ -80,14 +86,16 @@ namespace ZOQ::Stm32_HAL {
 	
 	hal_uart_it* hal_uart_it::select_instance(UART_HandleTypeDef const* h) {
 		switch ((uint32_t)(h->Instance)) {
-			case (uint32_t)USART1:
+			case (uint32_t)USART1_BASE:
 				return instance1;
-			case (uint32_t)USART2:
+			case (uint32_t)USART2_BASE:
 				return instance2;
-			case (uint32_t)USART3:
+			case (uint32_t)USART3_BASE:
 				return instance3;
-			case (uint32_t)USART6:
-				return instance6;				
+#ifdef USART6_BASE
+			case (uint32_t)USART6_BASE:
+				return instance6;
+#endif
 			default:
 				return nullptr;
 		}
@@ -95,21 +103,23 @@ namespace ZOQ::Stm32_HAL {
 
 	hal_uart_it::hal_uart_it(UART_HandleTypeDef* h) : handle(h) {
 		switch ((uint32_t)(h->Instance)) {
-			case (uint32_t)USART1:
+			case (uint32_t)USART1_BASE:
 				instance1 = this;
 				break;
-			case (uint32_t)USART2:
+			case (uint32_t)USART2_BASE:
 				instance2 = this;
 				break;
-			case (uint32_t)USART3:
+			case (uint32_t)USART3_BASE:
 				instance3 = this;
 				break;	
-			case (uint32_t)USART6:
+#ifdef USART6_BASE
+			case (uint32_t)USART6_BASE:
 				instance6 = this;
-				break;				
+				break;
+#endif
 				
 		}
-		auto status = HAL_UART_Receive_IT(handle, &tmp_rx, 1);
+		auto status __attribute__((unused)) = HAL_UART_Receive_IT(handle, &tmp_rx, 1);
 	}
 
 	void hal_uart_it::OnTxCplt() {

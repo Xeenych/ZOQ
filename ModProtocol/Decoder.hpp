@@ -23,12 +23,12 @@ public:
 private:
 	inline void reset();
 	inline void decode_symbol(uint8_t byte);
-	IDecoderCallback& OnFinish;	// Колбэк, который вызывается при успешном декодировании посылки
 	uint8_t* const buf_start;
 	size_t const buf_size;
-	uint8_t* decoded_ptr;
 	uint8_t lrc = LRCSTART;
 	bool is_high = true;
+	uint8_t* decoded_ptr;
+	IDecoderCallback& OnFinish;	// Колбэк, который вызывается при успешном декодировании посылки
 	uint8_t current;
 };
 

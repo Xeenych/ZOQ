@@ -40,26 +40,26 @@ namespace ZOQ::Stm32_HAL {
 	
 	hal_uart_dma* hal_uart_dma::select_uart_by_handle(UART_HandleTypeDef const* h) {
 		switch ((uint32_t)h->Instance) {
-		case (uint32_t)USART1:
+		case (uint32_t)USART1_BASE:
 			return hal_uart_dma::uart1;
-		case (uint32_t)USART2:
+		case (uint32_t)USART2_BASE:
 			return hal_uart_dma::uart2;
-		case (uint32_t)USART3:
+		case (uint32_t)USART3_BASE:
 			return hal_uart_dma::uart3;
 		#ifdef USART4			
-		case (uint32_t)USART4:
+		case (uint32_t)USART4_BASE:
 			return hal_uart_dma::uart4;
 		#endif	
 		#ifdef USART5			
-		case (uint32_t)USART5:
+		case (uint32_t)USART5_BASE:
 			return hal_uart_dma::uart5;
 		#endif				
 		#ifdef USART6			
-		case (uint32_t)USART6:
+		case (uint32_t)USART6_BASE:
 			return hal_uart_dma::uart6;
 		#endif				
 		#ifdef USART7			
-		case (uint32_t)USART7:
+		case (uint32_t)USART7_BASE:
 			return hal_uart_dma::uart7;
 		#endif	
 		}

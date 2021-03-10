@@ -8,8 +8,10 @@ namespace ZOQ::Stm32_HAL {
 	hal_can* hal_can::select_instance(CAN_HandleTypeDef const* hcan) {
 		if (hcan->Instance == CAN1)
 			return hal_can::hal_can1;
+#ifdef CAN2
 		else if (hcan->Instance == CAN2)
 			return hal_can::hal_can2;
+#endif
 		return nullptr;
 	}
 }	// namespace

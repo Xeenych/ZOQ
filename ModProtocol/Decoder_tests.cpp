@@ -38,7 +38,7 @@ unsigned char tmp[buf_size];
  * Неправильная посылка. Колбэк не будет вызван
  */
 TEST(ModProtocol_Decoder, test_bad_message) {
-	const uint8_t* msg = ":AA\n";
+	const uint8_t* msg = (uint8_t*)(":AA\n");
 	Decoder dec {tmp, buf_size, on_finish};
 	dec.Decode(msg, 4);
 	TEST_ASSERT_EQUAL(0, on_finish_called_times);
@@ -48,7 +48,7 @@ TEST(ModProtocol_Decoder, test_bad_message) {
  * Правильная посылка. Должен быть вызван колбэк
  */
 TEST(ModProtocol_Decoder, test_good_message) {
-	const uint8_t* msg = ":AB54\n";
+	const uint8_t* msg = (uint8_t*)(":AB54\n");
 	Decoder dec {tmp, buf_size, on_finish};
 	dec.Decode(msg, 6);
 	TEST_ASSERT_EQUAL(1, on_finish_called_times);
@@ -61,7 +61,7 @@ TEST(ModProtocol_Decoder, test_good_message) {
  * Правильная посылка, но два символа завершщения. Должен быть вызван колбэк один раз
  */
 TEST(ModProtocol_Decoder, test_good_message_double_fend) {
-	const uint8_t* msg = ":AB54\n\n";
+	const uint8_t* msg = (uint8_t*)(":AB54\n\n");
 	Decoder dec {tmp, buf_size, on_finish};
 	dec.Decode(msg, 7);
 	TEST_ASSERT_EQUAL(1, on_finish_called_times);
@@ -74,7 +74,7 @@ TEST(ModProtocol_Decoder, test_good_message_double_fend) {
  * Правильная посылка. Должен быть вызван колбэк два раза
  */
 TEST(ModProtocol_Decoder, test_good_message_twice) {
-	const uint8_t* msg = ":AA55\n:AB54\n";
+	const uint8_t* msg = (uint8_t*)(":AA55\n:AB54\n");
 	Decoder dec {tmp, buf_size, on_finish};
 	dec.Decode(msg, 12);
 	TEST_ASSERT_EQUAL(2, on_finish_called_times);
@@ -84,7 +84,7 @@ TEST(ModProtocol_Decoder, test_good_message_twice) {
 }
 
 TEST(ModProtocol_Decoder, test_bad_good_message) {
-	const uint8_t* msg = ":AA51\n:AB54\n";
+	const uint8_t* msg = (uint8_t*)(":AA51\n:AB54\n");
 	Decoder dec {tmp, buf_size, on_finish};
 	dec.Decode(msg, 12);
 	TEST_ASSERT_EQUAL(1, on_finish_called_times);
@@ -97,7 +97,7 @@ TEST(ModProtocol_Decoder, test_bad_good_message) {
  * Первая посылка имеет нечетное количество байт
  */
 TEST(ModProtocol_Decoder, test_incomplete_message) {
-	const uint8_t* msg = ":AA5:AB54\n";
+	const uint8_t* msg = (uint8_t*)(":AA5:AB54\n");
 	Decoder dec {tmp, buf_size, on_finish};
 	dec.Decode(msg, 10);
 	TEST_ASSERT_EQUAL(1, on_finish_called_times);
@@ -110,14 +110,14 @@ TEST(ModProtocol_Decoder, test_incomplete_message) {
  * Проверка крайних случаев
 */
 TEST(ModProtocol_Decoder, test_short_message) {
-	const uint8_t* msg = ":A\n";
+	const uint8_t* msg = (uint8_t*)(":A\n");
 	Decoder dec {tmp, buf_size, on_finish};
 	dec.Decode(msg, 3);
 	TEST_ASSERT_EQUAL(0, on_finish_called_times);
 }
 
 TEST(ModProtocol_Decoder, test_short_message2) {
-	const uint8_t* msg = ":FF\n";
+	const uint8_t* msg = (uint8_t*)(":FF\n");
 	Decoder dec {tmp, buf_size, on_finish};
 	dec.Decode(msg, 4);
 	TEST_ASSERT_EQUAL(1, on_finish_called_times);
@@ -125,7 +125,7 @@ TEST(ModProtocol_Decoder, test_short_message2) {
 }
 
 TEST(ModProtocol_Decoder, test_short_message3)	{
-	const uint8_t* msg = ":\n";
+	const uint8_t* msg = (uint8_t*)(":\n");
 	Decoder dec {tmp, buf_size, on_finish};
 	dec.Decode(msg, 2);
 	TEST_ASSERT_EQUAL(0, on_finish_called_times);
