@@ -11,7 +11,5 @@ namespace ZOQ::Stm32_HAL {
 		Reset = GPIO_PIN_RESET,
 		Set = GPIO_PIN_SET
 	};
-
-
 }	// namespace
 
