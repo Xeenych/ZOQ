@@ -5,7 +5,7 @@ using namespace ZOQ::Stm32_HAL;
 
 namespace ZOQ::Hardware {
 
-	using namespace ZOQ::Stm32f1xx_hal;
+	//using namespace ZOQ::Stm32f1xx_hal;
 
 	class contactor {
 	public:
@@ -21,12 +21,12 @@ namespace ZOQ::Hardware {
 	void contactor::set() const {
 		driver_pin.set();
 	}
-	
-	contactor::contactor(pio_output& _drv, pio_input& _status) : 
+
+	contactor::contactor(pio_output& _drv, pio_input& _status) :
 		driver_pin(_drv), status_pin(_status) {
     	contactor::reset();
 	}
-	
+
 	void contactor::reset() const {
     	driver_pin.reset();
 	}

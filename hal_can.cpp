@@ -1,15 +1,24 @@
 #include "hal_can.hpp"
 
 namespace ZOQ::Stm32_HAL {
+
+	hal_can* hal_can::hal_can0 = nullptr;
 	hal_can* hal_can::hal_can1 = nullptr;
 	hal_can* hal_can::hal_can2 = nullptr;
 
+hal_can* hal_can::select_instance(CAN_HandleTypeDef const* hcan) {
 
-	hal_can* hal_can::select_instance(CAN_HandleTypeDef const* hcan) {
+#ifdef CAN
+		if (hcan->Instance == CAN)
+			return hal_can::hal_can0;
+#endif
+
+#ifdef CAN1
 		if (hcan->Instance == CAN1)
 			return hal_can::hal_can1;
+#endif
 #ifdef CAN2
-		else if (hcan->Instance == CAN2)
+		if (hcan->Instance == CAN2)
 			return hal_can::hal_can2;
 #endif
 		return nullptr;
