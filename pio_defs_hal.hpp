@@ -10,7 +10,10 @@ namespace ZOQ::Stm32_HAL {
 	};
 
 	inline void setPin(Pin const& p, pinState state) {
-		HAL_GPIO_WritePin(p.port, 1U << p.pin_num, GPIO_PIN_SET);
+		if (state == pinState::Set)
+			HAL_GPIO_WritePin(p.port, 1U << p.pin_num, GPIO_PIN_SET);
+		else
+			HAL_GPIO_WritePin(p.port, 1U << p.pin_num, GPIO_PIN_RESET);
 	}
 
 	inline pinState getPinState(Pin const& p) {

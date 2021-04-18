@@ -19,7 +19,7 @@
 	#include "hal_can.hpp"
 #endif
 
-#if HAL_UART_MODULE_ENABLED
+#ifdef HAL_UART_MODULE_ENABLED
 	#include "uart.hpp"
 	#include "uartStream.hpp"
 	#include "hal_uart.hpp"
