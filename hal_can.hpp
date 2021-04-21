@@ -88,7 +88,7 @@ inline hal_can::hal_can(CAN_HandleTypeDef *_hcan) :
 		hal_can2 = this;
 #endif
 
-	HAL_CAN_Start(hcan);
+	auto result = HAL_CAN_Start(_hcan);
 }
 
 inline uint32_t hal_can::messagesAvailable() {
