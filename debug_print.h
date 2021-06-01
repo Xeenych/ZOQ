@@ -1,5 +1,5 @@
-#ifdef DEBUG_PRINT
 #include <stdio.h>
+#ifdef DEBUG_PRINT
 #define MYDEBUG 1
 #else
 #define MYDEBUG 0

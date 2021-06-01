@@ -1,5 +1,6 @@
 #pragma once
 #include "zoq.hpp"
+#include <assert.h>
 
 namespace ZOQ::Stm32_HAL {
 
@@ -34,6 +35,7 @@ public:
 
 private:
 	CAN_HandleTypeDef *const hcan;
+	static hal_can *hal_can0;
 	static hal_can *hal_can1;
 	static hal_can *hal_can2;
 	static hal_can* select_instance(CAN_HandleTypeDef const *hcan);
@@ -73,14 +75,20 @@ inline HAL_StatusTypeDef hal_can::Start() {
 
 inline hal_can::hal_can(CAN_HandleTypeDef *_hcan) :
 		hcan(_hcan) {
+#ifdef CAN
+	if (_hcan->Instance == CAN)
+		hal_can0 = this;
+#endif
+#ifdef CAN1
 	if (_hcan->Instance == CAN1)
 		hal_can1 = this;
+#endif
 #ifdef CAN2
 	else if (_hcan->Instance == CAN2)
 		hal_can2 = this;
 #endif
 
-	HAL_CAN_Start(hcan);
+	auto result = HAL_CAN_Start(_hcan);
 }
 
 inline uint32_t hal_can::messagesAvailable() {
