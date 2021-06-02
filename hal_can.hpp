@@ -15,13 +15,14 @@ struct CAN_RxMsg {
 };
 
 using rx_callback_t = void (*)(CAN_RxMsg const& message);
-using tx_callback_t = void (*)(CAN_TxMsg const& message);
+using tx_callback_t = void (*)(uint32_t mailbox);
 
 class hal_can {
 
 public:
 	hal_can(CAN_HandleTypeDef *hcan);
 	void ActivateDmaRx(rx_callback_t onMessageReceived);
+	void ActivateDmaTx(tx_callback_t onMessageSent);
 	void PauseNotification();
 	void ResumeNotification();
 	uint32_t messagesAvailable();
@@ -31,7 +32,7 @@ public:
 	rx_callback_t OnMessageReceived = nullptr;
 	HAL_StatusTypeDef Stop();
 	HAL_StatusTypeDef Start();
-	tx_callback_t OnSend = nullptr;
+	tx_callback_t OnMessageSent = nullptr;
 
 private:
 	CAN_HandleTypeDef *const hcan;
@@ -42,6 +43,9 @@ private:
 
 	friend void ::HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan);
 	friend void ::HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan);
+	friend void ::HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan);
+	friend void ::HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef *hcan);
+	friend void ::HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef *hcan);
 };
 
 inline void hal_can::PauseNotification() {
@@ -62,6 +66,13 @@ inline void hal_can::ActivateDmaRx(rx_callback_t onMessageReceived) {
 	OnMessageReceived = onMessageReceived;
 	static const uint32_t ints = CAN_IT_RX_FIFO0_MSG_PENDING
 			| CAN_IT_RX_FIFO1_MSG_PENDING;
+	auto r1 = HAL_CAN_ActivateNotification(hcan, ints);
+	assert(r1 == HAL_OK);
+}
+
+inline void hal_can::ActivateDmaTx(tx_callback_t onMessageSent) {
+	OnMessageSent = onMessageSent;
+	static const uint32_t ints = CAN_IT_TX_MAILBOX_EMPTY;
 	auto r1 = HAL_CAN_ActivateNotification(hcan, ints);
 	assert(r1 == HAL_OK);
 }
@@ -112,8 +123,6 @@ inline bool hal_can::readMessage(CAN_RxMsg &msgout) {
 }
 
 inline bool hal_can::sendMessage(CAN_TxMsg &txmsg) {
-	if (OnSend != nullptr)
-		OnSend(txmsg);
 	uint32_t unused_pTxMailbox;
 	HAL_StatusTypeDef result = HAL_CAN_AddTxMessage(hcan, &txmsg.header,
 			txmsg.data, &unused_pTxMailbox);

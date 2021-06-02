@@ -35,9 +35,36 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 	if (msg_result == false)
 		return;
 
-	instance->OnMessageReceived(msg);
+	if (instance->OnMessageReceived != nullptr)
+		instance->OnMessageReceived(msg);
 }
 
 void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 	HAL_CAN_RxFifo0MsgPendingCallback(hcan);
+}
+
+void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan) {
+	auto instance = hal_can::select_instance(hcan);
+	if (instance == nullptr)
+		 return;
+
+	if (instance->OnMessageSent != nullptr)
+		instance->OnMessageSent(0);
+}
+void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef *hcan) {
+	auto instance = hal_can::select_instance(hcan);
+	if (instance == nullptr)
+		 return;
+
+	if (instance->OnMessageSent != nullptr)
+		instance->OnMessageSent(10);
+}
+
+void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef *hcan) {
+	auto instance = hal_can::select_instance(hcan);
+	if (instance == nullptr)
+		 return;
+
+	if (instance->OnMessageSent != nullptr)
+		instance->OnMessageSent(2);
 }
