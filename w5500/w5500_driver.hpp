@@ -16,12 +16,13 @@ class w5500driver_T {
     void WriteByte(uint16_t addr, uint8_t block, uint8_t b);
     void WriteWord(uint16_t addr, uint8_t block, uint16_t b);
     void WriteDWord(uint16_t addr, uint8_t block, uint32_t b);
-    uint16_t SendBuf(uint8_t sock, uint8_t* buf, uint16_t len);
+    uint16_t SendBuf(uint8_t sock, const uint8_t* buf, uint16_t len);
     uint16_t RecvBuf(uint8_t sock, uint8_t* buf, uint16_t buflen);
     void ReadBuf(uint16_t addr, uint8_t block, uint8_t* buf, uint16_t toread);
-    void WriteBuf(uint16_t addr, uint8_t block, uint8_t* buf, uint16_t len);
+    void WriteBuf(uint16_t addr, uint8_t block, const uint8_t* buf, uint16_t len);
     void set_nss();
     void clr_nss();
+    inline void run() {}; 
 
   private:
     spi_T& spi;
@@ -136,7 +137,7 @@ void w5500driver_T<spi_T>::ReadBuf(uint16_t addr, uint8_t block, uint8_t* buf, u
 }
 
 template <typename spi_T>
-void w5500driver_T<spi_T>::WriteBuf(uint16_t addr, uint8_t block, uint8_t* buf, uint16_t len)
+void w5500driver_T<spi_T>::WriteBuf(uint16_t addr, uint8_t block, const uint8_t* buf, uint16_t len)
 {
     if (len == 0)
         return;
@@ -152,7 +153,7 @@ void w5500driver_T<spi_T>::WriteBuf(uint16_t addr, uint8_t block, uint8_t* buf, 
 }
 
 template <typename spi_T>
-uint16_t w5500driver_T<spi_T>::SendBuf(uint8_t sock, uint8_t* buf, uint16_t len)
+uint16_t w5500driver_T<spi_T>::SendBuf(uint8_t sock, const uint8_t* buf, uint16_t len)
 {
     if (!len)
         return 0;
