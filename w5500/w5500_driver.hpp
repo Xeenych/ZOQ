@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <algorithm>
 
 #include "w5500/w5500_defs.h"
 
@@ -67,7 +68,6 @@ uint32_t w5500driver_T<spi_T>::ReadDWord(uint16_t addr, uint8_t block)
 
     spi.set_nss();
     spi.TransmitReceive(txd, rxd, sizeof(txd));
-    assert(HAL_OK == status);
     spi.clr_nss();
 
     uint32_t ret = (rxd[3] << 24) | (rxd[4] << 16) | (rxd[5] << 8) | rxd[6];
@@ -175,12 +175,11 @@ template <typename spi_T>
 uint16_t w5500driver_T<spi_T>::RecvBuf(uint8_t sock, uint8_t* buf, uint16_t buflen)
 {
     uint16_t rxsize = ReadWord(W5500_ADR_Sn_RX_RSR, W5500_BSB_SOCKET(sock));
-    uint16_t rxaddr = ReadWord(W5500_ADR_Sn_RX_RD, W5500_BSB_SOCKET(sock));
-
     uint16_t torecv = (rxsize > buflen) ? buflen : rxsize;
     if (!torecv)
         return 0;
-
+    
+    uint16_t rxaddr = ReadWord(W5500_ADR_Sn_RX_RD, W5500_BSB_SOCKET(sock));
     ReadBuf(rxaddr, W5500_BSB_SOCKET_RX(sock), buf, torecv);
     WriteWord(W5500_ADR_Sn_RX_RD, W5500_BSB_SOCKET(sock), torecv + rxaddr);
     WriteByte(W5500_ADR_Sn_CR, W5500_BSB_SOCKET(sock), W5500_Sn_CR_RECV);
