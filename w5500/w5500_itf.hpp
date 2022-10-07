@@ -1,4 +1,5 @@
 #pragma once
+#include "debug_print.hpp"
 
 namespace w5500 {
 
@@ -22,11 +23,11 @@ class w5500_itf {
 
     inline w5500_itf(driver_t& d, const settings_t& set);
     void SetSettings(const settings_t& settings);
-    void Run();
+	void WriteSettings();
+    settings_t ReadSettings();
+	void Run();
 
   private:
-    settings_t ReadSettings();
-    void WriteSettings();
     driver_t& drv;
     settings_t settings;
 };
@@ -73,27 +74,10 @@ void w5500_itf<driver_t>::SetSettings(const w5500_itf<driver_t>::settings_t& set
 template <class driver_t>
 void w5500_itf<driver_t>::WriteSettings()
 {
-    drv.WriteByte(W5500_ADR_SHAR + 0, W5500_BSB_COMMON, settings.shar[0]);
-    drv.WriteByte(W5500_ADR_SHAR + 1, W5500_BSB_COMMON, settings.shar[1]);
-    drv.WriteByte(W5500_ADR_SHAR + 2, W5500_BSB_COMMON, settings.shar[2]);
-    drv.WriteByte(W5500_ADR_SHAR + 3, W5500_BSB_COMMON, settings.shar[3]);
-    drv.WriteByte(W5500_ADR_SHAR + 4, W5500_BSB_COMMON, settings.shar[4]);
-    drv.WriteByte(W5500_ADR_SHAR + 5, W5500_BSB_COMMON, settings.shar[5]);
-
-    drv.WriteByte(W5500_ADR_SUBR + 0, W5500_BSB_COMMON, settings.subr[0]);
-    drv.WriteByte(W5500_ADR_SUBR + 1, W5500_BSB_COMMON, settings.subr[1]);
-    drv.WriteByte(W5500_ADR_SUBR + 2, W5500_BSB_COMMON, settings.subr[2]);
-    drv.WriteByte(W5500_ADR_SUBR + 3, W5500_BSB_COMMON, settings.subr[3]);
-
-    drv.WriteByte(W5500_ADR_GAR + 0, W5500_BSB_COMMON, settings.gar[0]);
-    drv.WriteByte(W5500_ADR_GAR + 1, W5500_BSB_COMMON, settings.gar[1]);
-    drv.WriteByte(W5500_ADR_GAR + 2, W5500_BSB_COMMON, settings.gar[2]);
-    drv.WriteByte(W5500_ADR_GAR + 3, W5500_BSB_COMMON, settings.gar[3]);
-
-    drv.WriteByte(W5500_ADR_SIPR + 0, W5500_BSB_COMMON, settings.sipr[0]);
-    drv.WriteByte(W5500_ADR_SIPR + 1, W5500_BSB_COMMON, settings.sipr[1]);
-    drv.WriteByte(W5500_ADR_SIPR + 2, W5500_BSB_COMMON, settings.sipr[2]);
-    drv.WriteByte(W5500_ADR_SIPR + 3, W5500_BSB_COMMON, settings.sipr[3]);
+	drv.WriteBuf(W5500_ADR_SHAR, W5500_BSB_COMMON, settings.shar,6);
+	drv.WriteBuf(W5500_ADR_SUBR, W5500_BSB_COMMON, settings.subr,4);
+	drv.WriteBuf(W5500_ADR_GAR, W5500_BSB_COMMON, settings.gar,4);
+	drv.WriteBuf(W5500_ADR_SIPR, W5500_BSB_COMMON, settings.sipr,4);
 }
 
 template <class driver_t>
@@ -104,16 +88,19 @@ void w5500_itf<driver_t>::Run()
     version = drv.ReadByte(W5500_ADR_VERSIONR, W5500_BSB_COMMON);
 
     status_t status;
+    status.HasChip = (version == 0x04) ? 1 : 0;
 
-    //status.HasChip = (version == 0x04) ? 1 : 0;
-
-    WriteSettings();
+  	WriteSettings();
+	auto set = ReadSettings();
+	
+	if (set.sipr[0] != settings.sipr[0])
+		debug_printf("bad");
 
     // проверка наличия провода
     uint8_t phycfgr = drv.ReadByte(W5500_ADR_PHYCFGR, W5500_BSB_COMMON);
-    status.HasPhyLink = (phycfgr & 0x01 > 0) ? 1 : 0;
-    status.Is100Mbps = (phycfgr & 0x02 > 0) ? 1 : 0;
-    status.IsFullDuplex = (phycfgr & 0x04 > 0) ? 1 : 0;
+    status.HasPhyLink = ((phycfgr & 0x01) > 0) ? 1 : 0;
+    status.Is100Mbps = ((phycfgr & 0x02) > 0) ? 1 : 0;
+    status.IsFullDuplex = ((phycfgr & 0x04) > 0) ? 1 : 0;
     //return state_t::W5500_Configured;
 }
 

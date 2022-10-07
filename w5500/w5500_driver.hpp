@@ -101,7 +101,7 @@ void w5500driver_T<spi_T>::WriteWord(uint16_t addr, uint8_t block, uint16_t b)
     txd[4] = b;
 
     spi.set_nss();
-    spi.TransmitReceive(txd, rxd, sizeof(txd));
+    spi.Transmit(txd, sizeof(txd));
     spi.clr_nss();
 }
 
@@ -118,7 +118,7 @@ void w5500driver_T<spi_T>::WriteDWord(uint16_t addr, uint8_t block, uint32_t b)
     txd[6] = b;
 
     spi.set_nss();
-    spi.TransmitReceive(txd, rxd, sizeof(txd));
+    spi.Transmit(txd, rxd, sizeof(txd));
     spi.clr_nss();
 }
 
