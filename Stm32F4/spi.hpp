@@ -6,10 +6,10 @@ namespace ZOQ::Stm32_HAL {
 
 class spi_t {
   public:
-    inline spi_t(SPI_TypeDef* s) : spi(s){};
+    inline constexpr spi_t(SPI_TypeDef* s) : spi(s){};
     inline void set_nss() const;
     inline void clr_nss() const;
-    void TransmitReceive(uint8_t* pTxData, uint8_t* pRxData, uint16_t Size) const;
+    void TransmitReceive(const uint8_t* pTxData, uint8_t* pRxData, uint16_t Size) const;
     void Transmit(const uint8_t* pTxData, uint16_t Size) const;
     void Receive( uint8_t* pRxData, uint16_t Size) const;
 
@@ -37,7 +37,7 @@ void spi_t::Transmit(const uint8_t* pTxData, uint16_t Size) const
     }
 }
 
-void spi_t::TransmitReceive(uint8_t* pTxData, uint8_t* pRxData, uint16_t Size) const
+void spi_t::TransmitReceive(const uint8_t* pTxData, uint8_t* pRxData, uint16_t Size) const
 {
 
 }

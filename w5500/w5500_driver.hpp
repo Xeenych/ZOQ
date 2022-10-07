@@ -10,7 +10,7 @@ namespace w5500 {
 template <typename spi_T>
 class w5500driver_T {
   public:
-    inline w5500driver_T(spi_T& s) : spi(spi){};
+	inline constexpr w5500driver_T(const spi_T& s):spi(s){};
     uint8_t ReadByte(uint16_t addr, uint8_t block);
     uint16_t ReadWord(uint16_t addr, uint8_t block);
     uint32_t ReadDWord(uint16_t addr, uint8_t block);
@@ -26,7 +26,7 @@ class w5500driver_T {
     inline void run() {}; 
 
   private:
-    spi_T& spi;
+    const spi_T& spi;
 };
 
 template <typename spi_T>
@@ -37,7 +37,9 @@ uint8_t w5500driver_T<spi_T>::ReadByte(uint16_t addr, uint8_t block)
     txd[1] = addr;
     txd[2] = ((block & 0x1f) << 3) | OPMODE_R | OPMODE_FIX8;
 
+	spi.set_nss();
     spi.TransmitReceive(txd, rxd, 4);
+	spi.clr_nss();
     uint8_t ret = rxd[3];
     return ret;
 }
@@ -84,7 +86,7 @@ void w5500driver_T<spi_T>::WriteByte(uint16_t addr, uint8_t block, uint8_t b)
     txd[3] = b;
 
     spi.set_nss();
-    spi.TransmitReceive(txd, rxd, sizeof(txd));
+    spi.Transmit(txd, sizeof(txd));
     spi.clr_nss();
 }
 
