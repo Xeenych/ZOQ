@@ -17,8 +17,6 @@ class w5500driver_T {
     void WriteByte(uint16_t addr, uint8_t block, uint8_t b);
     void WriteWord(uint16_t addr, uint8_t block, uint16_t b);
     void WriteDWord(uint16_t addr, uint8_t block, uint32_t b);
-    uint16_t SendBuf(uint8_t sock, const uint8_t* buf, uint16_t len);
-    uint16_t RecvBuf(uint8_t sock, uint8_t* buf, uint16_t buflen);
     void ReadBuf(uint16_t addr, uint8_t block, uint8_t* buf, uint16_t toread);
     void WriteBuf(uint16_t addr, uint8_t block, const uint8_t* buf, uint16_t len);
     void set_nss();
@@ -86,7 +84,7 @@ void w5500driver_T<spi_T>::WriteByte(uint16_t addr, uint8_t block, uint8_t b)
     txd[3] = b;
 
     spi.set_nss();
-    spi.Transmit(txd, sizeof(txd));
+    spi.TransmitReceive(txd, rxd, sizeof(txd));
     spi.clr_nss();
 }
 
@@ -101,7 +99,7 @@ void w5500driver_T<spi_T>::WriteWord(uint16_t addr, uint8_t block, uint16_t b)
     txd[4] = b;
 
     spi.set_nss();
-    spi.Transmit(txd, sizeof(txd));
+    spi.TransmitReceive(txd, rxd, sizeof(txd));
     spi.clr_nss();
 }
 
@@ -118,7 +116,7 @@ void w5500driver_T<spi_T>::WriteDWord(uint16_t addr, uint8_t block, uint32_t b)
     txd[6] = b;
 
     spi.set_nss();
-    spi.Transmit(txd, rxd, sizeof(txd));
+    spi.TransmitReceive(txd, rxd, sizeof(txd));
     spi.clr_nss();
 }
 
@@ -127,13 +125,13 @@ void w5500driver_T<spi_T>::ReadBuf(uint16_t addr, uint8_t block, uint8_t* buf, u
 {
     if (toread == 0)
         return;
-    uint8_t txd[3];
+    uint8_t txd[3], rxd[3];
     txd[0] = addr >> 8;
     txd[1] = addr;
     txd[2] = ((block & 0x1f) << 3) | OPMODE_R | OPMODE_VDM;
 
     spi.set_nss();
-    spi.Transmit(txd, sizeof(txd));
+    spi.TransmitReceive(txd, rxd, sizeof(txd));
     spi.Receive(buf, toread);
     spi.clr_nss();
 }
@@ -143,50 +141,17 @@ void w5500driver_T<spi_T>::WriteBuf(uint16_t addr, uint8_t block, const uint8_t*
 {
     if (len == 0)
         return;
-    uint8_t txd[3];
+    uint8_t txd[3], rxd[3];
     txd[0] = addr >> 8;
     txd[1] = addr;
     txd[2] = ((block & 0x1f) << 3) | OPMODE_W | OPMODE_VDM;
 
     spi.set_nss();
-    spi.Transmit(txd, sizeof(txd));
+    spi.TransmitReceive(txd, rxd, sizeof(txd));
     spi.Transmit(buf, len);
     spi.clr_nss();
 }
 
-template <typename spi_T>
-uint16_t w5500driver_T<spi_T>::SendBuf(uint8_t sock, const uint8_t* buf, uint16_t len)
-{
-    if (!len)
-        return 0;
 
-    uint16_t txfree = ReadWord(W5500_ADR_Sn_TX_FSR, W5500_BSB_SOCKET(sock));
-    if (!txfree)
-        return 0;
-
-    uint16_t txaddr = ReadWord(W5500_ADR_Sn_TX_WR, W5500_BSB_SOCKET(sock));
-    uint16_t tosend = (txfree > len) ? len : txfree;
-
-    WriteBuf(txaddr, W5500_BSB_SOCKET_TX(sock), buf, tosend);
-    WriteWord(W5500_ADR_Sn_TX_WR, W5500_BSB_SOCKET(sock), tosend + txaddr);
-    WriteByte(W5500_ADR_Sn_CR, W5500_BSB_SOCKET(sock), W5500_Sn_CR_SEND);
-    return tosend;
-}
-
-template <typename spi_T>
-uint16_t w5500driver_T<spi_T>::RecvBuf(uint8_t sock, uint8_t* buf, uint16_t buflen)
-{
-    uint16_t rxsize = ReadWord(W5500_ADR_Sn_RX_RSR, W5500_BSB_SOCKET(sock));
-    uint16_t torecv = (rxsize > buflen) ? buflen : rxsize;
-    if (!torecv)
-        return 0;
-    
-    uint16_t rxaddr = ReadWord(W5500_ADR_Sn_RX_RD, W5500_BSB_SOCKET(sock));
-    ReadBuf(rxaddr, W5500_BSB_SOCKET_RX(sock), buf, torecv);
-    WriteWord(W5500_ADR_Sn_RX_RD, W5500_BSB_SOCKET(sock), torecv + rxaddr);
-    WriteByte(W5500_ADR_Sn_CR, W5500_BSB_SOCKET(sock), W5500_Sn_CR_RECV);
-
-    return torecv;
-}
 
 }
