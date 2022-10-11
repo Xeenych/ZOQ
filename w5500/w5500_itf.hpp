@@ -1,11 +1,13 @@
 #pragma once
 #include "debug_print.hpp"
+#include "tcp_socket.hpp"
 
 namespace w5500 {
 
 template <class driver_t>
 class w5500_itf {
   public:
+    using socket_t = tcp_socket<w5500_itf>;
     struct settings_t {
         uint8_t shar[6];  // mac
         uint8_t sipr[4];  // ip
@@ -13,6 +15,7 @@ class w5500_itf {
         uint8_t gar[4];   // gateway
     };
     enum class state_t : uint8_t { W5500_NoChip, W5500_NoCable, W5500_Configured, W5500_Init };
+    static constexpr inline uint8_t NUM_SOCKETS = 2;
 
     struct status_t {
         uint8_t HasChip : 1;
@@ -21,28 +24,26 @@ class w5500_itf {
         uint8_t IsFullDuplex : 1;
     };
 
-    inline w5500_itf(driver_t& d, const settings_t& set);
-    void SetSettings(const settings_t& settings);
+    inline constexpr w5500_itf(driver_t& d, const settings_t& set) : drv(d), settings(set){};
+    inline void SetSettings(const settings_t& settings);
     void WriteSettings();
     settings_t ReadSettings();
-    void run();
+    void run() const;
 
-    uint16_t socket_send(uint8_t sock, const uint8_t* buf, uint16_t len);
-    uint16_t socket_recv(uint8_t sock, uint8_t* buf, uint16_t buflen);
-    void socket_open_tcp(uint8_t sockn, uint16_t port);
-    void socket_listen(uint8_t sockn);
-    void socket_discon(uint8_t sockn);
-    uint16_t socket_rxlen(uint8_t sockn);
+    uint16_t socket_send(uint8_t sock, const uint8_t* buf, uint16_t len) const;
+    uint16_t socket_recv(uint8_t sock, uint8_t* buf, uint16_t buflen) const;
+    void socket_open_tcp(uint8_t sockn, uint16_t port) const;
+    void socket_listen(uint8_t sockn) const;
+    void socket_discon(uint8_t sockn) const;
+    uint16_t socket_rxlen(uint8_t sockn) const;
+
+    constexpr void socket_bind(socket_t* s, uint8_t sockn);
 
   private:
     driver_t& drv;
     settings_t settings;
+    std::array<socket_t*, NUM_SOCKETS> sockets{};
 };
-
-template <class driver_t>
-w5500_itf<driver_t>::w5500_itf(driver_t& d, const settings_t& set) : drv(d), settings(set)
-{
-}
 
 template <class driver_t>
 typename w5500_itf<driver_t>::settings_t w5500_itf<driver_t>::ReadSettings()
@@ -71,7 +72,7 @@ void w5500_itf<driver_t>::WriteSettings()
 }
 
 template <class driver_t>
-uint16_t w5500_itf<driver_t>::socket_send(uint8_t sock, const uint8_t* buf, uint16_t len)
+uint16_t w5500_itf<driver_t>::socket_send(uint8_t sock, const uint8_t* buf, uint16_t len) const
 {
     if (!len)
         return 0;
@@ -90,7 +91,7 @@ uint16_t w5500_itf<driver_t>::socket_send(uint8_t sock, const uint8_t* buf, uint
 }
 
 template <class driver_t>
-uint16_t w5500_itf<driver_t>::socket_recv(uint8_t sock, uint8_t* buf, uint16_t buflen)
+uint16_t w5500_itf<driver_t>::socket_recv(uint8_t sock, uint8_t* buf, uint16_t buflen) const
 {
     uint16_t rxsize = drv.ReadWord(W5500_ADR_Sn_RX_RSR, W5500_BSB_SOCKET(sock));
     uint16_t torecv = (rxsize > buflen) ? buflen : rxsize;
@@ -106,7 +107,7 @@ uint16_t w5500_itf<driver_t>::socket_recv(uint8_t sock, uint8_t* buf, uint16_t b
 }
 
 template <class driver_t>
-void w5500_itf<driver_t>::socket_open_tcp(uint8_t sockn, uint16_t port)
+void w5500_itf<driver_t>::socket_open_tcp(uint8_t sockn, uint16_t port) const
 {
     drv.WriteWord(W5500_ADR_Sn_PORT, W5500_BSB_SOCKET(sockn), port);
     drv.WriteByte(W5500_ADR_Sn_RXBUF_SIZE, W5500_BSB_SOCKET(sockn), W5500_SOCK_SIZE_2K);
@@ -116,54 +117,65 @@ void w5500_itf<driver_t>::socket_open_tcp(uint8_t sockn, uint16_t port)
 }
 
 template <class driver_t>
-void w5500_itf<driver_t>::socket_listen(uint8_t sockn)
+void w5500_itf<driver_t>::socket_listen(uint8_t sockn) const
 {
     drv.WriteByte(W5500_ADR_Sn_CR, W5500_BSB_SOCKET(sockn), W5500_Sn_CR_LISTEN);
 }
 
 template <class driver_t>
-void w5500_itf<driver_t>::socket_discon(uint8_t sockn)
+void w5500_itf<driver_t>::socket_discon(uint8_t sockn) const
 {
     drv.WriteByte(W5500_ADR_Sn_CR, W5500_BSB_SOCKET(sockn), W5500_Sn_CR_DISCON);
 }
 
 template <class driver_t>
-uint16_t w5500_itf<driver_t>::socket_rxlen(uint8_t sockn)
+constexpr void w5500_itf<driver_t>::socket_bind(socket_t* s, uint8_t sockn)
+{
+    sockets[sockn] = s;
+}
+
+template <class driver_t>
+uint16_t w5500_itf<driver_t>::socket_rxlen(uint8_t sockn) const
 {
     return drv.ReadWord(W5500_ADR_Sn_RX_RSR, W5500_BSB_SOCKET(sockn));
 }
 
 template <class driver_t>
-void w5500_itf<driver_t>::run()
+void w5500_itf<driver_t>::run() const
 {
-    for (int sockn = 0; sockn < 8; sockn++) {
+    for (int sockn = 0; sockn < NUM_SOCKETS; sockn++) {
         auto snsr = drv.ReadByte(W5500_ADR_Sn_SR, W5500_BSB_SOCKET(sockn));
-        switch (snsr) {
-            case W5500_Sn_SR_SOCK_CLOSED:
-                //handler.on_closed(*this);
-                debug_printf("sock %d closed\n", sockn);
-                break;
-            case W5500_Sn_SR_SOCK_INIT:
-                //handler.on_init(*this);
-                debug_printf("sock %d init\n", sockn);
-                break;
-            case W5500_Sn_SR_SOCK_LISTEN:
-                //handler.on_listen(*this);
-                //			debug_printf("sock %d listen\n", sockn);
-                break;
-            case W5500_Sn_SR_SOCK_ESTABLISHED:
-                //handler.on_established(*this);
-                // debug_printf("sock %d established\n", sockn);
-                break;
-            case W5500_Sn_SR_SOCK_CLOSE_WAIT:
-                //handler.on_close_wait(*this);
-                debug_printf("sock %d close_wait\n", sockn);
-                break;
-            default:
-                debug_printf("sock %d close_other\n", sockn);
-                //			assert(0);
-                break;
-        }
+        auto s = sockets[sockn];
+        if (s)
+            switch (snsr) {
+                case W5500_Sn_SR_SOCK_CLOSED:
+                    s->on_closed();
+                    debug_printf("sock %d closed\n", sockn);
+                    break;
+                case W5500_Sn_SR_SOCK_INIT:
+                    s->on_init();
+                    debug_printf("sock %d init\n", sockn);
+                    break;
+                case W5500_Sn_SR_SOCK_LISTEN:
+                    // handler.on_listen(*this);
+                    s->on_listen();
+                    //			debug_printf("sock %d listen\n", sockn);
+                    break;
+                case W5500_Sn_SR_SOCK_ESTABLISHED:
+                    // handler.on_established(*this);
+                    s->on_established();
+                    //  debug_printf("sock %d established\n", sockn);
+                    break;
+                case W5500_Sn_SR_SOCK_CLOSE_WAIT:
+                    s->on_close_wait();
+                    // handler.on_close_wait(*this);
+                    debug_printf("sock %d close_wait\n", sockn);
+                    break;
+                default:
+                    debug_printf("sock %d close_other\n", sockn);
+                    //			assert(0);
+                    break;
+            }
     }
 }
 
