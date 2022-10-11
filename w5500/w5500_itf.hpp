@@ -45,7 +45,7 @@ w5500_itf<driver_t>::w5500_itf(driver_t& d, const settings_t& set) : drv(d), set
 }
 
 template <class driver_t>
-w5500_itf<driver_t>::settings_t w5500_itf<driver_t>::ReadSettings()
+typename w5500_itf<driver_t>::settings_t w5500_itf<driver_t>::ReadSettings()
 {
     settings_t ret;
     drv.ReadBuf(W5500_ADR_SHAR, W5500_BSB_COMMON, ret.shar, 6);
@@ -140,23 +140,23 @@ void w5500_itf<driver_t>::run()
         auto snsr = drv.ReadByte(W5500_ADR_Sn_SR, W5500_BSB_SOCKET(sockn));
         switch (snsr) {
             case W5500_Sn_SR_SOCK_CLOSED:
-                handler.on_closed(*this);
+                //handler.on_closed(*this);
                 debug_printf("sock %d closed\n", sockn);
                 break;
             case W5500_Sn_SR_SOCK_INIT:
-                handler.on_init(*this);
+                //handler.on_init(*this);
                 debug_printf("sock %d init\n", sockn);
                 break;
             case W5500_Sn_SR_SOCK_LISTEN:
-                handler.on_listen(*this);
+                //handler.on_listen(*this);
                 //			debug_printf("sock %d listen\n", sockn);
                 break;
             case W5500_Sn_SR_SOCK_ESTABLISHED:
-                handler.on_established(*this);
+                //handler.on_established(*this);
                 // debug_printf("sock %d established\n", sockn);
                 break;
             case W5500_Sn_SR_SOCK_CLOSE_WAIT:
-                handler.on_close_wait(*this);
+                //handler.on_close_wait(*this);
                 debug_printf("sock %d close_wait\n", sockn);
                 break;
             default:
