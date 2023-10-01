@@ -4,6 +4,7 @@
 #include <cassert>
 
 #include "HAL_TIM_interrupt_handler.hpp"
+#include "ZOQ/stm32_hal/critical_section.hpp"
 #include "logging.h"
 #include "tim.h"
 
@@ -54,13 +55,14 @@ oneshot_timer_t::~oneshot_timer_t()
 void oneshot_timer_t::register_event(callback_t* cb, size_t ticks)
 {
     LOG_DBG("register_event()");
-    __disable_irq();
+
+    critical_section_t sec;
     for (auto& el : event_table)
         if (!el._cb) {
             el = {cb, ticks};
-            __enable_irq();
             return;
         }
+
     LOG_DBG("ASSERT");
     assert(false);
 }
