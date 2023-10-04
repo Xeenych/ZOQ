@@ -10,6 +10,7 @@ class callback_itf {
 
 struct callback_t {
     inline void execute() const { fn(arg); }
+    bool is_valid() const { return fn; }
     void (*fn)(void* arg);
     void* arg;
 };
