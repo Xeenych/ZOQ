@@ -53,7 +53,7 @@ oneshot_timer_t::~oneshot_timer_t()
 
 void oneshot_timer_t::schedule(const callback_t& cb, size_t ticks)
 {
-    LOG_DBG("register_event()");
+    LOG_DBG("schedule()");
 
     critical_section_t sec;
     for (auto& el : event_table)

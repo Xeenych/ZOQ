@@ -10,16 +10,21 @@ class callback_itf {
 
 class callback_t {
   public:
-    using fn_t = void (*)(void*);
+    template <typename T>
+    using fn_t = void (*)(T*);
+
     constexpr callback_t() = default;
-    constexpr callback_t(const fn_t& fn, void* arg) : _fn(fn), _arg(arg) {}
+
+    template <typename T>
+    constexpr callback_t(const fn_t<T>& fn, void* arg) : _fn(reinterpret_cast<fn_t<void>>(fn)), _arg(arg){};
+
     constexpr void execute() const { _fn(_arg); }
     constexpr bool valid() const { return _fn; }
     constexpr void clear() { _fn = nullptr; }
 
   private:
     // function pointer to be called
-    fn_t _fn = nullptr;
+    fn_t<void> _fn = nullptr;
     // function argument
     void* _arg = nullptr;
 };
