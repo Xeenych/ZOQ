@@ -19,15 +19,16 @@ extern "C" void TIM1_TRG_COM_TIM11_IRQHandler()
     assert(__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) == SET);
     __HAL_TIM_CLEAR_IT(htim, TIM_IT_UPDATE);
 
-    for (auto& ev : event_table)
-        if (ev.valid()) {
-            ev._ticks_left--;
-            if (ev.expired()) {
-                auto e = ev;
-                ev.clear();
-                e.execute();
-            }
+    for (auto& ev : event_table) {
+        if (!ev.valid())
+            continue;
+        ev._ticks_left--;
+        if (ev.expired()) {
+            auto e = ev;
+            ev.clear();
+            e.execute();
         }
+    }
 
     LOG_DBG("HAL_TIM_PeriodElapsedCallback() END");
     // Check that no events are missed
