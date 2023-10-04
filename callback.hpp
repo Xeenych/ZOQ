@@ -17,7 +17,6 @@ class callback_t {
 
     template <typename T>
     constexpr callback_t(const fn_t<T>& fn, void* arg) : _fn(reinterpret_cast<fn_t<void>>(fn)), _arg(arg){};
-
     constexpr void execute() const { _fn(_arg); }
     constexpr bool valid() const { return _fn; }
     constexpr void clear() { _fn = nullptr; }
