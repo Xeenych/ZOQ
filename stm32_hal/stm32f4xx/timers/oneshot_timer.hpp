@@ -12,6 +12,10 @@ using namespace ZOQ;
 class oneshot_timer_t {
   public:
     struct event_t {
+        constexpr bool valid() const { return _cb; };
+        constexpr bool expired() const { return (0 == _ticks); }
+        void clear() { _cb = nullptr; }
+        void execute() { _cb->execute(); }
         callback_t* _cb;
         size_t _ticks;
     };

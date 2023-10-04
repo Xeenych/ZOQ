@@ -12,8 +12,6 @@ using namespace ZOQ;
 
 static ZOQ::stm32_hal::stm32f4xx::timers::oneshot_timer_t::event_t event_table[10];
 
-bool flag = 0;
-
 extern "C" void TIM1_TRG_COM_TIM11_IRQHandler()
 {
     TIM_HandleTypeDef* htim = &htim11;
@@ -22,12 +20,12 @@ extern "C" void TIM1_TRG_COM_TIM11_IRQHandler()
     __HAL_TIM_CLEAR_IT(htim, TIM_IT_UPDATE);
 
     for (auto& ev : event_table)
-        if (ev._cb) {
+        if (ev.valid()) {
             ev._ticks--;
-            if (0 == ev._ticks) {
-                auto cb = ev._cb;
-                ev._cb = nullptr;  // deregister event
-                cb->execute();
+            if (ev.expired()) {
+                auto e = ev;
+                ev.clear();
+                e.execute();
             }
         }
 
