@@ -51,7 +51,7 @@ oneshot_timer_t::~oneshot_timer_t()
     assert(HAL_OK == status);
 }
 
-void oneshot_timer_t::register_event(const callback_t& cb, size_t ticks)
+void oneshot_timer_t::schedule(const callback_t& cb, size_t ticks)
 {
     LOG_DBG("register_event()");
 

@@ -26,7 +26,7 @@ class oneshot_timer_t {
 
     oneshot_timer_t(TIM_HandleTypeDef& htim);
     ~oneshot_timer_t();
-    void register_event(const callback_t& cb, size_t ticks);
+    void schedule(const callback_t& cb, size_t ticks);
 
   private:
     TIM_HandleTypeDef& _htim;
