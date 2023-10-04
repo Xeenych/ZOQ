@@ -21,7 +21,7 @@ extern "C" void TIM1_TRG_COM_TIM11_IRQHandler()
 
     for (auto& ev : event_table)
         if (ev.valid()) {
-            ev._ticks--;
+            ev._ticks_left--;
             if (ev.expired()) {
                 auto e = ev;
                 ev.clear();
@@ -50,13 +50,13 @@ oneshot_timer_t::~oneshot_timer_t()
     assert(HAL_OK == status);
 }
 
-void oneshot_timer_t::register_event(callback_t* cb, size_t ticks)
+void oneshot_timer_t::register_event(const callback_t& cb, size_t ticks)
 {
     LOG_DBG("register_event()");
 
     critical_section_t sec;
     for (auto& el : event_table)
-        if (!el._cb) {
+        if (!el.valid()) {
             el = {cb, ticks};
             return;
         }

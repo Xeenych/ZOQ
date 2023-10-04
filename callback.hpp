@@ -8,11 +8,19 @@ class callback_itf {
     virtual ~callback_itf() = default;
 };
 
-struct callback_t {
-    inline void execute() const { fn(arg); }
-    bool is_valid() const { return fn; }
-    void (*fn)(void* arg);
-    void* arg;
+class callback_t {
+  public:
+    constexpr callback_t() = default;
+    constexpr callback_t(void (*fn)(void*), void* arg) : _fn(fn), _arg(arg) {}
+    constexpr void execute() const { _fn(_arg); }
+    constexpr bool valid() const { return _fn; }
+    constexpr void clear() { _fn = nullptr; }
+
+  private:
+    // function pointer to be called
+    void (*_fn)(void*){};
+    // function argument
+    void* _arg{};
 };
 
 template <typename T>
