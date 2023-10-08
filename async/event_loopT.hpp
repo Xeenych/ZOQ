@@ -1,6 +1,7 @@
 #pragma once
 
-#include "ZOQ/callback.hpp"
+#include <cassert>
+#include <cstdlib>
 
 namespace ZOQ::async {
 
@@ -8,18 +9,39 @@ template <typename T>
 using fn_T = void (T::*)();
 
 template <typename T>
-class event_T {
+struct event_T {
+    void execute() const { (_context->*_function)(); }
+    void clear() { _function = nullptr; }
+    bool valid() const { return nullptr == _function; }
     fn_T<T> _function;
-    T* context;
+    T* _context;
 };
 
-template <typename T>
+template <typename T, size_t SIZE>
 class event_loop_T {
   public:
-    void activate();
-    void push(const event_T<T>& cb);
+    void activate()
+    {
+        for (auto& e : _events) {
+            if (e.valid()) {
+                auto ee = e;
+                e.clear();
+                ee.execute();
+            }
+        }
+    }
+
+    void push(event_T<T> new_event)
+    {
+        for (auto& e : _events)
+            if (!e.valid()) {
+                e = new_event;
+                return;
+            }
+        assert(false);
+    }
 
   private:
-    event_T<T> _events[10];
+    event_T<T> _events[SIZE];
 };
 }  // namespace ZOQ::async
