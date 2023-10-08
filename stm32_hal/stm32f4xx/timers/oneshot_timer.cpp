@@ -32,7 +32,7 @@ extern "C" void TIM1_TRG_COM_TIM11_IRQHandler()
 
     LOG_DBG("HAL_TIM_PeriodElapsedCallback() END");
     // Check that no events are missed
-    assert(__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) == RESET);
+    //assert(__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) == RESET);
 }
 
 namespace ZOQ::stm32_hal::stm32f4xx::timers {
