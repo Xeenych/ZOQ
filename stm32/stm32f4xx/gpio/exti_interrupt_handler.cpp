@@ -1,4 +1,4 @@
-#define LOG_ENABLE 1
+#define LOG_ENABLE 0
 #include "exti_interrupt_handler.hpp"
 
 #include <cassert>
