@@ -38,7 +38,7 @@ extern "C" void EXTI15_10_IRQHandler(void)
     }
 }
 
-namespace ZOQ::stm32::stm32f4xx::gpio {
+namespace ZOQ::stm32::stm32f4xx::gpio::exti {
 
 void register_handler(uint32_t pin, const callback_t& cb)
 {
@@ -50,4 +50,4 @@ void register_handler(uint32_t pin, const callback_t& cb)
     assert(false);
 }
 
-}  // namespace ZOQ::stm32::stm32f4xx::gpio
+}  // namespace ZOQ::stm32::stm32f4xx::gpio::exti
