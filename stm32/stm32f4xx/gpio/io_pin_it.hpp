@@ -10,12 +10,11 @@ using namespace ZOQ::itf;
 
 class io_pin_it_t final : public io_pin_itf {
   public:
-    constexpr io_pin_it_t(GPIO_TypeDef* port, const uint32_t& pin, const callback_t& cb) : _port(port), _pin(pin)
-    {
-        register_handler(pin, cb);
-    };
+    constexpr io_pin_it_t(GPIO_TypeDef* port, const uint32_t& pin) : _port(port), _pin(pin) {}
 
-    void set() override { _port->BSRR = _pin; }
+    void register_handler(const callback_t& cb) { exti::register_handler(_pin, cb); }
+
+    constexpr void set() override { _port->BSRR = _pin; }
     void reset() override { _port->BSRR = (uint32_t)(_pin << 16U); }
     bool get() override { return ((_port->IDR & _pin) != (uint32_t)GPIO_PIN_RESET); }
 
