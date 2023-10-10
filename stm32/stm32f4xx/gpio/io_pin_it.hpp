@@ -10,7 +10,7 @@ using namespace ZOQ::itf;
 
 class io_pin_it_t final : public io_pin_itf {
   public:
-    constexpr io_pin_it_t(GPIO_TypeDef* port, const uint32_t& pin) : _port(port), _pin(pin) {}
+    constexpr io_pin_it_t(const pin_def_t& p) : _port(static_cast<GPIO_TypeDef*>(p.port)), _pin(p.pin) {}
 
     void register_handler(const callback_t& cb) { exti::register_handler(_pin, cb); }
 
