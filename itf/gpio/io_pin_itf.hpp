@@ -1,6 +1,12 @@
 #pragma once
+#include <cstdint>
 
 namespace ZOQ::itf {
+
+struct pin_def_t {
+    void* port;
+    uint32_t pin;
+};
 
 class io_pin_itf {
   public:
