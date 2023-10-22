@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ZOQ/itf/gpio/io_pin_itf.hpp"
+#include "ZOQ/stm32/stm32f4xx/gpio/gpio.hpp"
 #include "exti_interrupt_handler.hpp"
-#include "pin_name.hpp"
 #include "stm32f4xx.h"
 
 namespace ZOQ::stm32::stm32f4xx::gpio {
