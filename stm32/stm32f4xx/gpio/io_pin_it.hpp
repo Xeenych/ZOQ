@@ -2,6 +2,7 @@
 
 #include "ZOQ/itf/gpio/io_pin_itf.hpp"
 #include "exti_interrupt_handler.hpp"
+#include "pin_name.hpp"
 #include "stm32f4xx.h"
 
 namespace ZOQ::stm32::stm32f4xx::gpio {
@@ -10,7 +11,7 @@ using namespace ZOQ::itf;
 
 class io_pin_it_t final : public io_pin_itf {
   public:
-    constexpr io_pin_it_t(const pin_def_t& p) : _port(static_cast<GPIO_TypeDef*>(p.port)), _pin(p.pin) {}
+    constexpr io_pin_it_t(const pin_name_t& p) : _port(static_cast<GPIO_TypeDef*>(p.port)), _pin(p.pin) {}
 
     void register_handler(const callback_t& cb) { exti::register_handler(_pin, cb); }
 
