@@ -10,9 +10,9 @@ using namespace ZOQ::itf;
 
 class o_pin_t final : public o_pin_itf {
   public:
-    enum output_t { push_pull = 0, open_drain = 1 };
-    enum pull_t { no_pull = 0, pull_up = 1, pull_down = 2 };
-    enum speed_t { low = 0, medium = 1, high = 2, very_high = 3 };
+    enum class output_t { push_pull = 0, open_drain = 1 };
+    enum class pull_t { no_pull = 0, pull_up = 1, pull_down = 2 };
+    enum class speed_t { low = 0, medium = 1, high = 2, very_high = 3 };
 
     constexpr o_pin_t(const pin_name_t& p, output_t output_type, pull_t pull, speed_t speed)
         : _port(p.port), _pin(p.pin)
