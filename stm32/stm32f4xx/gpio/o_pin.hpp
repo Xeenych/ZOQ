@@ -14,8 +14,7 @@ class o_pin_t final : public o_pin_itf {
     enum class pull_t { no_pull = 0, pull_up = 1, pull_down = 2 };
     enum class speed_t { low = 0, medium = 1, high = 2, very_high = 3 };
 
-    constexpr o_pin_t(const pin_name_t& p, output_t output_type, pull_t pull, speed_t speed)
-        : _port(p.port), _pin(p.pin)
+    o_pin_t(const pin_name_t& p, output_t output_type, pull_t pull, speed_t speed) : _port(p.port), _pin(p.pin)
     {
         {
             uint32_t temp = _port->MODER;
@@ -27,14 +26,14 @@ class o_pin_t final : public o_pin_itf {
         {
             uint32_t temp = _port->PUPDR;
             temp &= ~(0x03 << (_pin << _pin));
-            temp |= pull << (_pin << _pin);  // pullup mode
+            temp |= (uint32_t)pull << (_pin << _pin);  // pullup mode
             _port->PUPDR = temp;
         }
 
         {
             uint32_t temp = _port->OSPEEDR;
             temp &= ~(0x03 << (_pin << _pin));
-            temp |= speed << (_pin << _pin);  // speed
+            temp |= (uint32_t)speed << (_pin << _pin);  // speed
             _port->OSPEEDR = temp;
         }
 
