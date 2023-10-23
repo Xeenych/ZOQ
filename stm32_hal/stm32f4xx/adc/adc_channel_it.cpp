@@ -8,13 +8,40 @@
 
 using namespace ZOQ::stm32_hal::stm32f4xx::adc;
 
+struct handler_t {
+    ADC_HandleTypeDef* hadc;
+    adc_channel_it_t* instance;
+};
+
+static handler_t adc_handlers[10]{};
+
+static void register_interrupt_handler(ADC_HandleTypeDef* hadc, adc_channel_it_t* instance)
+{
+    for (auto& h : adc_handlers)
+        if (!h.hadc) {
+            h.hadc = hadc;
+            h.instance = instance;
+            return;
+        }
+    assert(false);
+}
+
 extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
     LOG_DBG("HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)");
-    adc_channel_it_t::_instance->on_measure_end();
+    for (const auto& h : adc_handlers)
+        if (h.hadc == hadc)
+            h.instance->on_measure_end();
 }
 
 namespace ZOQ::stm32_hal::stm32f4xx::adc {
+
+adc_channel_it_t::adc_channel_it_t(ADC_HandleTypeDef& handle, uint32_t channel, uint32_t sample_time)
+    : _handle(handle), _channel(channel), _sample_time(sample_time)
+
+{
+    register_interrupt_handler(&handle, this);
+};
 
 void adc_channel_it_t::on_measure_end() const
 {
