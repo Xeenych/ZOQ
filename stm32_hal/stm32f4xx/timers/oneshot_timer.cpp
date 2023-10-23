@@ -15,8 +15,8 @@ static ZOQ::stm32_hal::stm32f4xx::timers::oneshot_timer_t::event_t event_table[1
 extern "C" void TIM1_TRG_COM_TIM11_IRQHandler()
 {
     TIM_HandleTypeDef* htim = &htim11;
-    LOG_DBG("HAL_TIM_PeriodElapsedCallback()");
-    assert(__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) == SET);
+    // LOG_DBG("HAL_TIM_PeriodElapsedCallback()");
+    // assert(__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) == SET);
     __HAL_TIM_CLEAR_IT(htim, TIM_IT_UPDATE);
 
     for (auto& ev : event_table) {
@@ -32,7 +32,7 @@ extern "C" void TIM1_TRG_COM_TIM11_IRQHandler()
 
     LOG_DBG("HAL_TIM_PeriodElapsedCallback() END");
     // Check that no events are missed
-    //assert(__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) == RESET);
+    assert(__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) == RESET);
 }
 
 namespace ZOQ::stm32_hal::stm32f4xx::timers {
@@ -55,14 +55,14 @@ void oneshot_timer_t::schedule(const callback_t& cb, size_t ticks)
 {
     LOG_DBG("schedule()");
 
-    critical_section_t sec;
-    for (auto& el : event_table)
-        if (!el.valid()) {
-            el = {cb, ticks};
-            return;
-        }
-
-    LOG_DBG("ASSERT");
+    {
+        critical_section_t sec;
+        for (auto& el : event_table)
+            if (!el.valid()) {
+                el = {cb, ticks};
+                return;
+            }
+    }
     assert(false);
 }
 

@@ -18,7 +18,7 @@ class adc_channel_it_t {
         _measure_end_ctx = measure_end_ctx;
     }
 
-    void measure() const;
+    void measure();
     void on_measure_end() const;
     static inline adc_channel_it_t* _instance;
 
@@ -27,8 +27,8 @@ class adc_channel_it_t {
     const uint32_t _channel;
     const uint32_t _sample_time;
 
-    fn_t _measure_end_cb;
-    void* _measure_end_ctx;
+    fn_t _measure_end_cb = nullptr;
+    void* _measure_end_ctx = nullptr;
 };
 
 }  // namespace ZOQ::stm32_hal::stm32f4xx::adc
