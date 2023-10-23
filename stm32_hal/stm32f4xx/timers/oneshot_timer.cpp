@@ -49,12 +49,14 @@ oneshot_timer_t::~oneshot_timer_t()
     LOG_DBG("~oneshot_timer_t()");
     auto status = HAL_TIM_Base_Stop_IT(&_htim);
     assert(HAL_OK == status);
+
+    for (auto& el : event_table)
+        el.clear();
 }
 
 void oneshot_timer_t::schedule(const callback_t& cb, size_t ticks)
 {
     LOG_DBG("schedule()");
-
     {
         critical_section_t sec;
         for (auto& el : event_table)
