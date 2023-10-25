@@ -15,7 +15,7 @@ extern "C" void TIM1_TRG_COM_TIM11_IRQHandler()
 {
     TIM_HandleTypeDef* htim = &htim11;
     // LOG_DBG("HAL_TIM_PeriodElapsedCallback()");
-    // assert(__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) == SET);
+    assert(__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) == SET);
     __HAL_TIM_CLEAR_IT(htim, TIM_IT_UPDATE);
 
     oneshot_timer_t::on_timer_interrupt();
