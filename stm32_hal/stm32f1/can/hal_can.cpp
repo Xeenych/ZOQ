@@ -1,5 +1,7 @@
 #include "hal_can.hpp"
 
+#if __has_include("stm32f1xx_hal.h")
+
 namespace ZOQ::Stm32_HAL {
 
 	hal_can* hal_can::hal_can0 = nullptr;
@@ -68,3 +70,5 @@ void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef *hcan) {
 	if (instance->OnMessageSent != nullptr)
 		instance->OnMessageSent(2);
 }
+
+#endif

@@ -5,14 +5,14 @@
 #include "zoq_conf.hpp"
 #include "timeout_timer.hpp"
 #include "IReadWrite.hpp"
-#include "Bufreader.hpp"
+#include "ZOQ/bufreader.hpp"
 #include "systick_timer.hpp"
 
 
 
 #include "pio_output.hpp"
 #include "pio_input.hpp"
-#include "Hardware/contactor.hpp"
+#include "ZOQ/hardware/contactor.hpp"
 
 
 #ifdef HAL_CAN_MODULE_ENABLED
@@ -20,16 +20,15 @@
 #endif
 
 #ifdef HAL_UART_MODULE_ENABLED
-	#include "uart.hpp"
-	#include "uartStream.hpp"
-	#include "hal_uart.hpp"
-	#include "hal_uart_it.hpp"
-	#include "hal_uartT.hpp"
+	//#include "uart.hpp"
+	//#include "uartStream.hpp"
+	//#include "hal_uart.hpp"
+	//#include "hal_uart_it.hpp"
+	//#include "hal_uartT.hpp"
 #endif
 
 
 #include "ITextStream.hpp"
-#include "rcc.hpp"
 
-#include "ModProtocol\ModProtocol.hpp"
-#include "ModProtocol\Encoder.hpp"
+#include "ZOQ/ModProtocol/ModProtocol.hpp"
+#include "ZOQ/ModProtocol/Encoder.hpp"
