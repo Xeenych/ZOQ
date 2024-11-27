@@ -1,0 +1,4 @@
+#C_SOURCES += ${ZOQ_ROOT}/stm32_hal/
+#C_SOURCES += ${ZOQ_ROOT}
+#C_SOURCES += ${ZOQ_ROOT}
+#CXX_SOURCES += ${ZOQ_ROOT}

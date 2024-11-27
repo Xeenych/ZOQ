@@ -1,0 +1,1 @@
+include ${ZOQ_ROOT}/stm32_hal/stm32_hal.mk

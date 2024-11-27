@@ -1,0 +1,1 @@
+include ${ZOQ_ROOT}/stm32f4xx/stm32f4xx.mk
