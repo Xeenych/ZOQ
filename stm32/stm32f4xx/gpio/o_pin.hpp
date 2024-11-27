@@ -43,6 +43,9 @@ class o_pin_t final : public o_pin_itf {
         }
     }
 
+    o_pin_t(const o_pin_t&) = delete;
+    o_pin_t& operator=(const o_pin_t&) = delete;
+
     void set() override { _port->BSRR = _pin; }
     void reset() override { _port->BSRR = (uint32_t)(_pin << 16U); }
 

@@ -15,6 +15,9 @@ class io_pin_t final : public io_pin_itf {
     void reset() override { _port->BSRR = (uint32_t)(_pin << 16U); }
     bool get() override { return ((_port->IDR & _pin) != (uint32_t)GPIO_PIN_RESET); }
 
+    io_pin_t(const io_pin_t&) = delete;
+    io_pin_t& operator=(const io_pin_t&) = delete;
+
   private:
     GPIO_TypeDef* const _port = nullptr;
     const uint32_t _pin = 0;

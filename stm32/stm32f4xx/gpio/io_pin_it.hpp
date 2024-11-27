@@ -13,6 +13,9 @@ class io_pin_it_t final : public io_pin_itf {
   public:
     constexpr io_pin_it_t(const pin_name_t& p) : _port(static_cast<GPIO_TypeDef*>(p.port)), _pin(p.pin) {}
 
+    io_pin_it_t(const io_pin_it_t&) = delete;
+    io_pin_it_t& operator=(const io_pin_it_t&) = delete;
+
     void register_handler(const callback_t& cb) { exti::register_handler(_pin, cb); }
 
     constexpr void set() override { _port->BSRR = _pin; }
