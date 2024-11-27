@@ -6,6 +6,9 @@ class pwm_driver_one_pulse_t {
     pwm_driver_one_pulse_t(TIM_HandleTypeDef* htim, uint32_t OnePulseMode);
     ~pwm_driver_one_pulse_t();
 
+    pwm_driver_one_pulse_t(pwm_driver_one_pulse_t const&) = delete;
+    pwm_driver_one_pulse_t& operator=(pwm_driver_one_pulse_t const&) = delete;
+
   private:
     TIM_HandleTypeDef* const _htim;
 };
