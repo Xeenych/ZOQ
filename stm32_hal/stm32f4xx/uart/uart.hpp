@@ -5,7 +5,7 @@
 #include "itf/uart_itf.hpp"
 #include "stm32f4xx_hal.h"
 
-namespace stm32f4xx::uart {
+namespace ZOQ::stm32_hal::stm32f4xx::uart {
 
 class uart_t : public itf::uart_itf {
   public:
@@ -26,4 +26,4 @@ class uart_t : public itf::uart_itf {
     UART_HandleTypeDef& _huart;
 };
 
-}  // namespace stm32f4xx::uart
+}  // namespace ZOQ::stm32_hal::stm32f4xx::uart

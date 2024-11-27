@@ -1,7 +1,7 @@
 #pragma once
 #include <span>
 
-namespace itf {
+namespace ZOQ::itf {
 class uart_itf {
   public:
     virtual void write(const std::span<const uint8_t>& data) = 0;
@@ -11,4 +11,4 @@ class uart_itf {
   private:
 };
 
-}  // namespace itf
+}  // namespace ZOQ::itf
