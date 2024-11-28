@@ -1,10 +1,9 @@
 #pragma once
 
+#include "ZOQ/callback.hpp"
 #include "ZOQ/itf/gpio/io_pin_itf.hpp"
 #include "ZOQ/stm32/stm32f4xx/gpio/gpio.hpp"
 #include "ZOQ/stm32/stm32f4xx/gpio/pin_name.hpp"
-#include "exti_interrupt_handler.hpp"
-#include "stm32f4xx.h"
 
 namespace ZOQ::stm32::stm32f4xx::gpio {
 
@@ -17,15 +16,18 @@ class io_pin_it_t final : public io_pin_itf {
     io_pin_it_t(const io_pin_it_t&) = delete;
     io_pin_it_t& operator=(const io_pin_it_t&) = delete;
 
-    void register_handler(const callback_t& cb) { exti::register_handler(_pin, cb); }
+    void register_handler(const callback_t& cb) { _callback = cb; }
 
     constexpr void set() override { _port->BSRR = _pin; }
     void reset() override { _port->BSRR = (uint32_t)(_pin << 16U); }
     bool get() override { return ((_port->IDR & _pin) != (uint32_t)GPIO_PIN_RESET); }
 
+    void EXTI_IRQHandler() {}
+
   private:
     GPIO_TypeDef* const _port = nullptr;
     const uint32_t _pin = 0;
+    callback_t _callback{};
 };
 
 }  // namespace ZOQ::stm32::stm32f4xx::gpio
