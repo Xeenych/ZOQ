@@ -1,11 +1,8 @@
 #pragma once
 
-#include "ZOQ/callback.hpp"
 #include "stm32f4xx_hal.h"
 
 namespace ZOQ::stm32_hal::stm32f4xx::adc {
-
-using namespace ZOQ;
 
 class adc_channel_it_t {
   public:
@@ -15,7 +12,7 @@ class adc_channel_it_t {
     {
     }
 
-    constexpr void register_handler(fn_t measure_end_cb, void* measure_end_ctx)
+    constexpr void set_callback(fn_t measure_end_cb, void* measure_end_ctx)
     {
         _measure_end_cb = measure_end_cb;
         _measure_end_ctx = measure_end_ctx;
@@ -23,8 +20,8 @@ class adc_channel_it_t {
 
     void measure();
     void on_measure_end() const;
-    static inline adc_channel_it_t* _instance{};
 
+    static inline adc_channel_it_t* _instance{};
     static void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
 
   private:
