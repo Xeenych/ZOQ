@@ -6,29 +6,19 @@
 
 #include "logging.h"
 
-using namespace ZOQ::stm32_hal::stm32f4xx::adc;
+namespace ZOQ::stm32_hal::stm32f4xx::adc {
 
-struct handler_t {
-    ADC_HandleTypeDef* hadc = nullptr;
-    adc_channel_it_t* instance = nullptr;
-};
-
-// There is only anoe ADC channel may be active at a time
-static handler_t adc_handler;
-
-static void register_interrupt_handler(ADC_HandleTypeDef* hadc, adc_channel_it_t* instance)
+void adc_channel_it_t::register_interrupt_handler(ADC_HandleTypeDef* hadc, adc_channel_it_t* instance)
 {
     adc_handler.hadc = hadc;
     adc_handler.instance = instance;
 }
 
-extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+void adc_channel_it_t::HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-    if (adc_handler.hadc == hadc)
-        adc_handler.instance->on_measure_end();
+    if (adc_channel_it_t::adc_handler.hadc == hadc)
+        adc_channel_it_t::adc_handler.instance->on_measure_end();
 }
-
-namespace ZOQ::stm32_hal::stm32f4xx::adc {
 
 void adc_channel_it_t::on_measure_end() const
 {

@@ -23,7 +23,9 @@ class adc_channel_it_t {
 
     void measure();
     void on_measure_end() const;
-    static inline adc_channel_it_t* _instance;
+    static inline adc_channel_it_t* _instance{};
+
+    static void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc);
 
   private:
     ADC_HandleTypeDef& _handle;
@@ -32,6 +34,14 @@ class adc_channel_it_t {
 
     fn_t _measure_end_cb = nullptr;
     void* _measure_end_ctx = nullptr;
+
+    struct handler_t {
+        ADC_HandleTypeDef* hadc = nullptr;
+        adc_channel_it_t* instance = nullptr;
+    };
+    // There is only anoe ADC channel may be active at a time
+    static inline handler_t adc_handler{nullptr, nullptr};
+    void register_interrupt_handler(ADC_HandleTypeDef* hadc, adc_channel_it_t* instance);
 };
 
 }  // namespace ZOQ::stm32_hal::stm32f4xx::adc
