@@ -1,8 +1,6 @@
 #define LOG_ENABLE 0
 #include "oneshot_timer.hpp"
 
-#include <cassert>
-
 #include "HAL_TIM_interrupt_handler.hpp"
 #include "ZOQ/stm32_hal/critical_section.hpp"
 #include "logging.h"
@@ -26,13 +24,6 @@ extern "C" void TIM1_TRG_COM_TIM11_IRQHandler()
 }
 
 namespace ZOQ::stm32_hal::stm32f4xx::timers {
-
-oneshot_timer_t::oneshot_timer_t(TIM_HandleTypeDef& htim) : _htim(htim)
-{
-    LOG_DBG("oneshot_timer_t()");
-    auto status = HAL_TIM_Base_Start_IT(&_htim);
-    assert(HAL_OK == status);
-}
 
 void oneshot_timer_t::on_timer_interrupt()
 {
