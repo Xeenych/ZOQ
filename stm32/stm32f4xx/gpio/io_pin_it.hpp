@@ -19,10 +19,10 @@ class io_pin_it_t final : public io_pin_itf {
     void register_handler(const callback_t& cb) { _callback = cb; }
 
     constexpr void set() override { _port->BSRR = _pin; }
-    void reset() override { _port->BSRR = (uint32_t)(_pin << 16U); }
+    constexpr void reset() override { _port->BSRR = (uint32_t)(_pin << 16U); }
     bool get() override { return ((_port->IDR & _pin) != (uint32_t)GPIO_PIN_RESET); }
 
-    void EXTI_IRQHandler() {}
+    constexpr void EXTI_IRQHandler() { _callback.execute(); }
 
   private:
     GPIO_TypeDef* const _port = nullptr;

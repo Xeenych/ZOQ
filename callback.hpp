@@ -17,7 +17,11 @@ class callback_t {
 
     template <typename T>
     constexpr callback_t(const fn_t<T>& fn, void* arg) : _fn(reinterpret_cast<fn_t<void>>(fn)), _arg(arg){};
-    constexpr void execute() const { _fn(_arg); }
+    constexpr void execute() const
+    {
+        if (_fn)
+            _fn(_arg);
+    }
     constexpr bool valid() const { return _fn; }
     constexpr void clear() { _fn = nullptr; }
 
@@ -31,7 +35,7 @@ class callback_t {
 template <typename T>
 struct callback_T : callback_itf {
     using fn_t = void (T::*)();
-    inline callback_T(fn_t f, T* instance) : _f(f), _instance(instance){};
+    inline callback_T(fn_t f, T* instance) : _f(f), _instance(instance) {};
     inline void execute() { (_instance->*_f)(); }
     fn_t _f;
     T* _instance;
