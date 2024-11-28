@@ -11,6 +11,10 @@ namespace ZOQ::stm32_hal::stm32f4xx::timers {
 
 void oneshot_timer_t::on_interrupt()
 {
+    if (RESET == __HAL_TIM_GET_FLAG(&_htim, TIM_FLAG_UPDATE))
+        return;
+    __HAL_TIM_CLEAR_IT(&_htim, TIM_IT_UPDATE);
+
     for (auto& ev : event_table) {
         if (!ev.valid())
             continue;
@@ -21,6 +25,9 @@ void oneshot_timer_t::on_interrupt()
             e.execute();
         }
     }
+
+    // Check that no events are missed
+    // assert(__HAL_TIM_GET_FLAG(htim, TIM_FLAG_UPDATE) == RESET);
 }
 
 oneshot_timer_t::~oneshot_timer_t()
