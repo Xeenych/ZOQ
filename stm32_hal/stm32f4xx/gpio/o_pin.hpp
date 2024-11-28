@@ -2,11 +2,12 @@
 
 #include <cstdint>
 
-#include "itf/o_pin_itf.hpp"
-#include "pin_name.hpp"
+#include "ZOQ/itf/gpio/o_pin_itf.hpp"
+#include "ZOQ/stm32/stm32f4xx/gpio/pin_name.hpp"
 #include "stm32f4xx_hal.h"
 
-namespace stm32f4xx::gpio {
+namespace ZOQ::stm32_hal::stm32f4xx::gpio {
+using namespace ZOQ::stm32::stm32f4xx::gpio;
 
 class o_pin_t : public itf::o_pin_itf {
   public:
@@ -22,4 +23,4 @@ class o_pin_t : public itf::o_pin_itf {
     const uint32_t _pin = 0;
 };
 
-}  // namespace stm32f4xx::gpio
+}  // namespace ZOQ::stm32_hal::stm32f4xx::gpio

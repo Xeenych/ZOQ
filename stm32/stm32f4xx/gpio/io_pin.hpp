@@ -2,11 +2,12 @@
 
 #include "ZOQ/itf/gpio/io_pin_itf.hpp"
 #include "ZOQ/stm32/stm32f4xx/gpio/gpio.hpp"
-#include "stm32f4xx.h"
+#include "pin_name.hpp"
 
 namespace ZOQ::stm32::stm32f4xx::gpio {
 
 using namespace ZOQ::itf;
+using namespace ZOQ::stm32::stm32f4xx::gpio;
 
 class io_pin_t final : public io_pin_itf {
   public:

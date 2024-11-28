@@ -1,46 +1,34 @@
 #pragma once
 
 #include "ZOQ/itf/gpio/o_pin_itf.hpp"
-#include "gpio.hpp"
-#include "stm32f4xx.h"
+#include "ZOQ/stm32/stm32f4xx/gpio/pin_name.hpp"
+#include "stm32f4xx_ll_gpio.h"
 
 namespace ZOQ::stm32::stm32f4xx::gpio {
 
 using namespace ZOQ::itf;
+using namespace ZOQ::stm32::stm32f4xx::gpio;
 
 class o_pin_t final : public o_pin_itf {
   public:
-    o_pin_t(const pin_name_t& p, output_t output_type, pull_t pull, speed_t speed) : _port(p.port), _pin(p.pin)
+    // output_type:
+    // * LL_GPIO_OUTPUT_PUSHPULL
+    // * LL_GPIO_OUTPUT_OPENDRAIN
+    // pull:
+    // * LL_GPIO_PULL_NO
+    // * LL_GPIO_PULL_UP
+    // * LL_GPIO_PULL_DOWN
+    // speed:
+    // * LL_GPIO_SPEED_FREQ_LOW
+    // * LL_GPIO_SPEED_FREQ_MEDIUM
+    // * LL_GPIO_SPEED_FREQ_HIGH
+    // * LL_GPIO_SPEED_FREQ_VERY_HIGH
+    o_pin_t(const pin_name_t& p, uint32_t output_type, uint32_t pull, uint32_t speed) : _port(p.port), _pin(p.pin)
     {
-        {
-            uint32_t temp = _port->MODER;
-            temp &= ~(0x03 << (_pin << _pin));
-            temp |= (uint32_t)pin_mode_t::output << (_pin << _pin);  // output mode
-            _port->MODER = temp;
-        }
-
-        {
-            uint32_t temp = _port->PUPDR;
-            temp &= ~(0x03 << (_pin << _pin));
-            temp |= (uint32_t)pull << (_pin << _pin);  // pullup mode
-            _port->PUPDR = temp;
-        }
-
-        {
-            uint32_t temp = _port->OSPEEDR;
-            temp &= ~(0x03 << (_pin << _pin));
-            temp |= (uint32_t)speed << (_pin << _pin);  // speed
-            _port->OSPEEDR = temp;
-        }
-
-        {
-            uint32_t temp = _port->OTYPER;
-            if (output_type == output_t::push_pull)
-                temp &= ~(_pin);
-            else
-                temp |= (_pin);
-            _port->OTYPER = temp;
-        }
+        LL_GPIO_SetPinOutputType(p.port, p.pin, output_type);
+        LL_GPIO_SetPinPull(p.port, p.pin, pull);
+        LL_GPIO_SetPinSpeed(p.port, p.pin, speed);
+        LL_GPIO_SetPinMode(p.port, p.pin, LL_GPIO_MODE_OUTPUT);
     }
 
     o_pin_t(const o_pin_t&) = delete;
