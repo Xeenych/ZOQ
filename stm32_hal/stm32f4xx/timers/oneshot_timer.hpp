@@ -8,7 +8,6 @@
 
 namespace ZOQ::stm32_hal::stm32f4xx::timers {
 
-using namespace ZOQ;
 using namespace ZOQ::itf;
 
 class oneshot_timer_t final : public oneshot_timer_itf {
