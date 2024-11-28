@@ -3,6 +3,7 @@
 #include "ZOQ/callback.hpp"
 #include "ZOQ/itf/gpio/io_pin_itf.hpp"
 #include "ZOQ/stm32/stm32f4xx/gpio/pin_name.hpp"
+#include "stm32f4xx_ll_exti.h"
 
 namespace ZOQ::stm32::stm32f4xx::gpio {
 
@@ -18,7 +19,13 @@ class io_pin_it_t final : public io_pin_itf {
     constexpr void reset() override { _p.port->BSRR = (uint32_t)(_p.pin << 16U); }
     bool get() override { return ((_p.port->IDR & _p.pin) != (uint32_t)GPIO_PIN_RESET); }
 
-    constexpr void EXTI_IRQHandler() { _callback.execute(); }
+    void EXTI_IRQHandler()
+    {
+        if (!LL_EXTI_IsActiveFlag_0_31(_p.pin))
+            return;
+        LL_EXTI_ClearFlag_0_31(_p.pin);
+        _callback.execute();
+    }
 
   private:
     const pin_name_t _p;
