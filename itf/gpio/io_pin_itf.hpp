@@ -1,8 +1,5 @@
 #pragma once
-#include <cstdint>
-
 namespace ZOQ::itf {
-
 
 class io_pin_itf {
   public:
