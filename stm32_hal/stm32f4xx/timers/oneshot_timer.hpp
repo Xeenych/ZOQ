@@ -20,11 +20,11 @@ class oneshot_timer_t final : public oneshot_timer_itf {
 
     ~oneshot_timer_t() override;
     void schedule(const callback_t& cb, size_t ticks) override;
-    static void on_timer_interrupt();
+    void on_interrupt();
 
   private:
     TIM_HandleTypeDef& _htim;
-    static inline event_t event_table[10];
+    event_t event_table[10]{};
 };
 
 }  // namespace ZOQ::stm32_hal::stm32f4xx::timers

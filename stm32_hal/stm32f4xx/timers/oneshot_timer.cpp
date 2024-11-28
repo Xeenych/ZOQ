@@ -9,7 +9,7 @@ using namespace ZOQ::stm32_hal::stm32f4xx::timers;
 
 namespace ZOQ::stm32_hal::stm32f4xx::timers {
 
-void oneshot_timer_t::on_timer_interrupt()
+void oneshot_timer_t::on_interrupt()
 {
     for (auto& ev : event_table) {
         if (!ev.valid())
