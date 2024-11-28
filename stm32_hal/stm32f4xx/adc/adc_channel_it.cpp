@@ -30,9 +30,6 @@ extern "C" void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 
 namespace ZOQ::stm32_hal::stm32f4xx::adc {
 
-adc_channel_it_t::adc_channel_it_t(ADC_HandleTypeDef& handle, uint32_t channel, uint32_t sample_time)
-    : _handle(handle), _channel(channel), _sample_time(sample_time){};
-
 void adc_channel_it_t::on_measure_end() const
 {
     auto value = HAL_ADC_GetValue(&_handle);

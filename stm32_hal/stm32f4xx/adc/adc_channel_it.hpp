@@ -10,7 +10,10 @@ using namespace ZOQ;
 class adc_channel_it_t {
   public:
     using fn_t = void (*)(uint32_t value, void* ctx);
-    adc_channel_it_t(ADC_HandleTypeDef& handle, uint32_t channel, uint32_t sample_time);
+    constexpr adc_channel_it_t(ADC_HandleTypeDef& handle, uint32_t channel, uint32_t sample_time)
+        : _handle(handle), _channel(channel), _sample_time(sample_time)
+    {
+    }
 
     constexpr void register_handler(fn_t measure_end_cb, void* measure_end_ctx)
     {
