@@ -1,10 +1,10 @@
 #pragma once
 
-#include "drv/itf/o_pin_itf.hpp"
+#include "ZOQ/itf/gpio/o_pin_itf.hpp"
 
-namespace peripherals {
+namespace ZOQ::hardware::led {
 
-template <bool inverted>
+template <bool inverted = false>
 class led_t : public itf::o_pin_itf {
   public:
     constexpr led_t(o_pin_itf& pin) : _pin{pin} {}
@@ -18,4 +18,4 @@ class led_t : public itf::o_pin_itf {
     o_pin_itf& _pin;
 };
 
-}  // namespace peripherals
+}  // namespace ZOQ::hardware::led
