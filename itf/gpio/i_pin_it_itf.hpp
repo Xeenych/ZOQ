@@ -1,6 +1,6 @@
 #pragma once
 
-namespace itf {
+namespace ZOQ::itf {
 
 class i_pin_it_itf {
   public:

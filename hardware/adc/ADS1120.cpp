@@ -1,7 +1,7 @@
 #include "ADS1120.hpp"
 
-#include "stm32f0xx.h"
-#include "sys/dassert.h"
+//#include "stm32f0xx.h"
+#include "ZOQ/sys/dassert.h"
 
 namespace common {
 
@@ -55,7 +55,7 @@ void ads1120_t::setup(const config_t& c)
 
 ads1120_t::ads1120_t(spi_itf& spi, o_pin_itf& cs, i_pin_it_itf& rdy) : spi_{spi}, cs_{cs}, drdy_{rdy}
 {
-    NVIC_DisableIRQ(EXTI0_1_IRQn);
+    //NVIC_DisableIRQ(EXTI0_1_IRQn);
     drdy_.set_callback(+[](void* c) { static_cast<ads1120_t*>(c)->on_ready_irq(); }, this);
 }
 
@@ -73,8 +73,8 @@ uint8_t ads1120_t::init()
 void ads1120_t::start()
 {
     // HAL_GPIO_WritePin(LED_S_GPIO_Port, LED_S_Pin, GPIO_PIN_RESET);
-    NVIC_ClearPendingIRQ(EXTI0_1_IRQn);
-    NVIC_EnableIRQ(EXTI0_1_IRQn);
+    //NVIC_ClearPendingIRQ(EXTI0_1_IRQn);
+    //NVIC_EnableIRQ(EXTI0_1_IRQn);
     command(START);
 }
 
@@ -389,7 +389,7 @@ int16_t ads1120_t::getData()
 
 void ads1120_t::on_ready_irq()
 {
-    NVIC_DisableIRQ(EXTI0_1_IRQn);
+    //NVIC_DisableIRQ(EXTI0_1_IRQn);
     // HAL_GPIO_WritePin(LED_S_GPIO_Port, LED_S_Pin, GPIO_PIN_SET);
 
     uint8_t buf[2];

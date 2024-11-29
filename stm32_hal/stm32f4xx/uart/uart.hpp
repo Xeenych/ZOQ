@@ -2,7 +2,7 @@
 #include <cassert>
 #include <span>
 
-#include "itf/uart_itf.hpp"
+#include "ZOQ/itf/uart/uart_itf.hpp"
 #include "stm32f4xx_hal.h"
 
 namespace ZOQ::stm32_hal::stm32f4xx::uart {

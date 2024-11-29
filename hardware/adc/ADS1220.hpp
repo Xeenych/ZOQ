@@ -1,12 +1,12 @@
 #pragma once
 
-#include "drv/itf/i_pin_it_itf.hpp"
-#include "drv/itf/o_pin_itf.hpp"
-#include "drv/itf/spi_itf.hpp"
+#include "ZOQ/itf/gpio/i_pin_it_itf.hpp"
+#include "ZOQ/itf/gpio/o_pin_itf.hpp"
+#include "ZOQ/itf/spi/spi_itf.hpp"
 
 namespace common {
 
-using namespace itf;
+using namespace ZOQ::itf;
 
 // ADS1120 class
 // Minimum SPI SCK period must be 150 ns
@@ -72,9 +72,9 @@ class ads1220_t {
     ads1220_t& operator=(const ads1220_t&) = delete;
 
   private:
-    itf::spi_itf& spi_;
-    itf::o_pin_itf& cs_;
-    itf::i_pin_it_itf& drdy_;
+    spi_itf& spi_;
+    o_pin_itf& cs_;
+    i_pin_it_itf& drdy_;
 
     on_sampling_complete_cb cb_ = nullptr;
     void* ctx_ = nullptr;

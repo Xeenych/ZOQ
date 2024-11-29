@@ -1,6 +1,6 @@
 #include "ADS1220.hpp"
 
-#include "stm32f0xx.h"
+//#include "stm32f0xx.h"
 #include "sys/dassert.h"
 
 // ADS1120 SPI commands
@@ -55,7 +55,7 @@ void ads1220_t::setup(const config_t& c)
 
 ads1220_t::ads1220_t(spi_itf& spi, o_pin_itf& cs, i_pin_it_itf& rdy) : spi_{spi}, cs_{cs}, drdy_{rdy}
 {
-    NVIC_DisableIRQ(EXTI0_1_IRQn);
+    //NVIC_DisableIRQ(EXTI0_1_IRQn);
     drdy_.set_callback(+[](void* c) { static_cast<ads1220_t*>(c)->on_ready_irq(); }, this);
 }
 
@@ -73,8 +73,8 @@ uint8_t ads1220_t::init()
 void ads1220_t::start()
 {
     // HAL_GPIO_WritePin(LED_S_GPIO_Port, LED_S_Pin, GPIO_PIN_RESET);
-    NVIC_ClearPendingIRQ(EXTI0_1_IRQn);
-    NVIC_EnableIRQ(EXTI0_1_IRQn);
+    //NVIC_ClearPendingIRQ(EXTI0_1_IRQn);
+    //NVIC_EnableIRQ(EXTI0_1_IRQn);
     command(ADS1220_START);
 }
 
@@ -90,7 +90,7 @@ void ads1220_t::powerDown()
 
 void ads1220_t::on_ready_irq()
 {
-    NVIC_DisableIRQ(EXTI0_1_IRQn);
+    //NVIC_DisableIRQ(EXTI0_1_IRQn);
 
     // В отличие от ADS1120 тут три байта результата
     uint8_t buf[3];
