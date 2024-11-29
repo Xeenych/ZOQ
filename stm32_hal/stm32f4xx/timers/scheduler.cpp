@@ -1,16 +1,9 @@
 
 #include "scheduler.hpp"
 
-#include "sys/dassert.h"
 #include "sys/irq_utils.hpp"
 
 namespace ZOQ {
-
-void scheduler_t::tick()
-{
-    for (event_t* t = _head; t != nullptr; t = t->_next)
-        t->tick();
-}
 
 void event_t::tick()
 {

@@ -6,15 +6,22 @@
 
 namespace ZOQ {
 
-class scheduler_t;
+class event_t;
+class scheduler_t {
+  public:
+    scheduler_t(TIM_HandleTypeDef& htim);
+    void tick();
+    constexpr void add(event_t* e);
+
+  private:
+    TIM_HandleTypeDef& _htim;
+    event_t* _head = nullptr;
+};
 
 class event_t {
   public:
     using fn_t = void (*)(void* arg);
-    event_t(scheduler_t& s, const fn_t& f, void* arg) : _fn{f}, _arg{arg}
-    {
-        // s.add_event(this);
-    }
+    event_t(scheduler_t& s, const fn_t& f, void* arg) : _fn{f}, _arg{arg} { s.add(this); }
     // Запускает отложенное событие
     // ctr - число тиков через которое выполнится отложенное событие
     // interval - интервал для перезагрузки таймера
@@ -44,26 +51,22 @@ class event_t {
     friend class scheduler_t;
 };
 
-class scheduler_t {
-  public:
-    scheduler_t(TIM_HandleTypeDef* htim) : _htim{htim}
-    {
-        auto status = HAL_TIM_Base_Start_IT(_htim);
-        assert(HAL_OK == status);
-    }
+inline scheduler_t::scheduler_t(TIM_HandleTypeDef& htim) : _htim{htim}
+{
+    auto status = HAL_TIM_Base_Start_IT(&_htim);
+    assert(HAL_OK == status);
+}
 
-    // Call this on timer interrupt
-    void tick();
+constexpr inline void scheduler_t::add(event_t* e)
+{
+    _head = e;
+    e->_next = _head;
+}
 
-    void add_event(event_t* e)
-    {
-        _head = e;
-        e->_next = _head;
-    }
-
-  private:
-    TIM_HandleTypeDef* const _htim;
-    event_t* _head = nullptr;
-};
+inline void scheduler_t::tick()
+{
+    for (event_t* t = _head; t != nullptr; t = t->_next)
+        t->tick();
+}
 
 }  // namespace ZOQ
