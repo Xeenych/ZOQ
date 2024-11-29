@@ -10,8 +10,8 @@ scheduler_t::scheduler_t(TIM_HandleTypeDef& htim) : _htim{htim}
 
 void scheduler_t::add(event_t* e)
 {
-    _head = e;
     e->_next = _head;
+    _head = e;
 }
 
 void scheduler_t::tick()

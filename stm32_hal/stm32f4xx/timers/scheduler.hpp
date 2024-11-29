@@ -1,6 +1,5 @@
 #pragma once
 #include <cassert>
-#include <cstdint>
 
 #include "event.hpp"
 #include "stm32f4xx_hal.h"
@@ -12,11 +11,14 @@ class scheduler_t {
   public:
     scheduler_t(TIM_HandleTypeDef& htim);
     void tick();
-    void add(event_t* e);
 
   private:
     TIM_HandleTypeDef& _htim;
     event_t* _head = nullptr;
+
+    void add(event_t* e);
+
+    friend class event_t;
 };
 
 }  // namespace ZOQ

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <atomic>
+
 #include "ZOQ/callback.hpp"
 #include "scheduler.hpp"
 
@@ -17,7 +19,7 @@ class event_t {
     // arm(100, 500) - выполнить событие черз 100 тиков, а потом выполнять каждые 500 тиков
     void arm(uint32_t ctr, uint32_t interval);
     void disarm();
-    bool armed() const { return (0 != m_ctr); }
+    bool armed() const { return (0 != _ctr); }
 
     // call this on SysTick interrupt
     void tick();
@@ -25,9 +27,9 @@ class event_t {
   private:
     const callback_t _cb;
 
-    event_t* _next = nullptr;  //! link to next time event in a link-list
-    uint32_t m_ctr = 0;        //! time event down-counter
-    uint32_t m_interval = 0;   //! interval for periodic time event
+    event_t* _next = nullptr;        //! link to next time event in a link-list
+    std::atomic<uint32_t> _ctr = 0;  //! time event down-counter
+    uint32_t _interval = 0;          //! interval for periodic time event
 
     friend class scheduler_t;
 };
