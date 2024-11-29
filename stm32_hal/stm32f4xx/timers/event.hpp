@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ZOQ/callback.hpp"
 #include "scheduler.hpp"
 
 namespace ZOQ {
@@ -8,8 +9,7 @@ class scheduler_t;
 
 class event_t {
   public:
-    using fn_t = void (*)(void* arg);
-    event_t(scheduler_t& s, const fn_t& f, void* arg);
+    event_t(scheduler_t& s, const callback_t& cb);
     // Запускает отложенное событие
     // ctr - число тиков через которое выполнится отложенное событие
     // interval - интервал для перезагрузки таймера
@@ -23,18 +23,11 @@ class event_t {
     void tick();
 
   private:
-    const fn_t _fn = nullptr;
-    void* const _arg = nullptr;
+    const callback_t _cb;
 
     event_t* _next = nullptr;  //! link to next time event in a link-list
     uint32_t m_ctr = 0;        //! time event down-counter
     uint32_t m_interval = 0;   //! interval for periodic time event
-
-    void execute()
-    {
-        if (_fn)
-            _fn(_arg);
-    }
 
     friend class scheduler_t;
 };

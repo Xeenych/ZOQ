@@ -3,7 +3,7 @@
 #include <cstdint>
 
 #include "ZOQ/callback.hpp"
-#include "oneshot_timer.hpp"
+#include "event.hpp"
 
 namespace ZOQ::stm32_hal::stm32f4xx::timers {
 
@@ -11,24 +11,24 @@ using namespace ZOQ;
 
 class oneshot_timer_event_t {
   public:
-    constexpr oneshot_timer_event_t(oneshot_timer_t& t, const callback_t& cb) : _t{t}, _cb{cb} {}
-    constexpr void start(uint32_t period);
-    constexpr void stop();
+    oneshot_timer_event_t(scheduler_t& s, const callback_t& cb) : _e{s, cb} {}
+    void start(uint32_t period) { _e.arm(period, 0); };
+    void stop() { _e.disarm(); };
+    bool is_armed() const { return _e.armed(); }
 
   private:
-    oneshot_timer_t& _t;
-    const callback_t _cb;
+    event_t _e;
 };
 
 class periodic_timer_event_t {
   public:
-    constexpr periodic_timer_event_t(oneshot_timer_t& t, const callback_t& cb) : _t{t}, _cb{cb} {}
-    constexpr void start(uint32_t period);
-    constexpr void stop();
+    periodic_timer_event_t(scheduler_t& s, const callback_t& cb) : _e{s, cb} {}
+    void start(uint32_t period) { _e.arm(0, period); }
+    void stop() { _e.disarm(); }
+    bool is_armed() const { return _e.armed(); }
 
   private:
-    oneshot_timer_t& _t;
-    const callback_t _cb;
+    event_t _e;
 };
 
 }  // namespace ZOQ::stm32_hal::stm32f4xx::timers

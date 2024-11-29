@@ -5,7 +5,7 @@
 
 namespace ZOQ {
 
-event_t::event_t(scheduler_t& s, const fn_t& f, void* arg) : _fn{f}, _arg{arg}
+event_t::event_t(scheduler_t& s, const callback_t& cb) : _cb{cb}
 {
     s.add(this);
 }
@@ -18,7 +18,7 @@ void event_t::tick()
     } else if (m_ctr == 1U) {  // expiring?
         m_ctr = m_interval;    // reload timer
         restore_interrupt(val);
-        execute();
+        _cb.execute();
     } else {  // timing out
         --m_ctr;
         restore_interrupt(val);
