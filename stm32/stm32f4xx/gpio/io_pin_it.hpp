@@ -14,11 +14,11 @@ class io_pin_it_t final : public it_pin_itf {
   public:
     constexpr io_pin_it_t(const pin_name_t& p) : _p{p} {}
 
-    void set_callback(const callback_t& cb) { _callback = cb; }
+    constexpr void set_callback(const callback_t& cb) { _callback = cb; }
 
-    constexpr void set()  { _p.port->BSRR = _p.pin; }
-    constexpr void reset()  { _p.port->BSRR = (uint32_t)(_p.pin << 16U); }
-    bool get()  { return ((_p.port->IDR & _p.pin) != (uint32_t)GPIO_PIN_RESET); }
+    constexpr void set() { _p.port->BSRR = _p.pin; }
+    constexpr void reset() { _p.port->BSRR = (uint32_t)(_p.pin << 16U); }
+    bool get() { return ((_p.port->IDR & _p.pin) != (uint32_t)GPIO_PIN_RESET); }
 
     void EXTI_IRQHandler()
     {
