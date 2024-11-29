@@ -1,38 +1,40 @@
 #pragma once
-#include "zoq.hpp"
 
-using namespace ZOQ::Stm32_HAL;
+#include "itf/gpio/io_pin_itf.hpp"
 
 namespace ZOQ::Hardware {
 
-	//using namespace ZOQ::Stm32f1xx_hal;
+using namespace ZOQ::itf;
 
-	class contactor {
-	public:
-		inline contactor(pio_output& _drv, pio_input& _status);
-		inline void set() const;
-		inline void reset() const;
-		inline bool isSet() const;
-	private:
-		pio_output& driver_pin;
-		pio_input& status_pin;
-	};
+class contactor {
+  public:
+    inline contactor(io_pin_itf& _drv, io_pin_itf& _status);
+    inline void set() const;
+    inline void reset() const;
+    inline bool isSet() const;
 
-	void contactor::set() const {
-		driver_pin.set();
-	}
+  private:
+    io_pin_itf& driver_pin;
+    io_pin_itf& status_pin;
+};
 
-	contactor::contactor(pio_output& _drv, pio_input& _status) :
-		driver_pin(_drv), status_pin(_status) {
-    	contactor::reset();
-	}
+void contactor::set() const
+{
+    driver_pin.set();
+}
 
-	void contactor::reset() const {
-    	driver_pin.reset();
-	}
+contactor::contactor(io_pin_itf& _drv, io_pin_itf& _status) : driver_pin(_drv), status_pin(_status)
+{
+    contactor::reset();
+}
 
-	bool contactor::isSet() const {
-		auto res = status_pin.read();
-		return (res == pinState::Set)? true : false;
-	}
-} // namespace
+void contactor::reset() const
+{
+    driver_pin.reset();
+}
+
+bool contactor::isSet() const
+{
+    return status_pin.get();
+}
+}  // namespace ZOQ::Hardware

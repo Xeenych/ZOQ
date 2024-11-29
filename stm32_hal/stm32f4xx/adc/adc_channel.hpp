@@ -7,7 +7,9 @@ namespace ZOQ::stm32_hal::stm32f4xx::adc {
 class adc_channel_t {
   public:
     constexpr adc_channel_t(ADC_HandleTypeDef& handle, uint32_t channel, uint32_t sample_time)
-        : _handle(handle), _channel(channel), _sample_time(sample_time){};
+        : _handle{handle}, _channel{channel}, _sample_time{sample_time}
+    {
+    }
     uint32_t measure() const;
 
   private:
