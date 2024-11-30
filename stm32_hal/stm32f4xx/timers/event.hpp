@@ -3,15 +3,15 @@
 #include <atomic>
 
 #include "ZOQ/callback.hpp"
-#include "scheduler.hpp"
+#include "ZOQ/itf/timers/scheduler_itf.hpp"
 
 namespace ZOQ {
 
-class scheduler_t;
+using namespace ZOQ::itf;
 
 class event_t {
   public:
-    event_t(scheduler_t& s, const callback_t& cb);
+    event_t(scheduler_itf& s, const callback_t& cb);
     // Запускает отложенное событие
     // ctr - число тиков через которое выполнится отложенное событие
     // interval - интервал для перезагрузки таймера

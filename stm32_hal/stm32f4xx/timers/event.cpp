@@ -5,7 +5,7 @@
 
 namespace ZOQ {
 
-event_t::event_t(scheduler_t& s, const callback_t& cb) : _cb{cb}
+event_t::event_t(scheduler_itf& s, const callback_t& cb) : _cb{cb}
 {
     s.add(this);
 }
