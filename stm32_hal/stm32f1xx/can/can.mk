@@ -1,0 +1,1 @@
+CXX_SOURCES += ${ZOQ_ROOT}/stm32_hal/stm32f1xx/can/hal_can.cpp

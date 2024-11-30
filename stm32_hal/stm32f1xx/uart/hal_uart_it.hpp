@@ -1,5 +1,8 @@
 #pragma once
-#include "zoq.hpp"
+
+#if __has_include("stm32f1xx_hal.h")
+
+#include "stm32f1xx_hal.h"
 
 namespace ZOQ::Stm32_HAL {
 
@@ -29,3 +32,5 @@ class hal_uart_it : public IReadWrite {
     friend void ::HAL_UART_ErrorCallback(UART_HandleTypeDef* huart);
 };
 }  // namespace ZOQ::Stm32_HAL
+
+#endif

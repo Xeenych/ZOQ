@@ -1,1 +1,0 @@
-include ${ZOQ_ROOT}/stm32_hal/stm32f1/can/can.mk
