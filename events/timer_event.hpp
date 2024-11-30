@@ -12,9 +12,9 @@ using namespace ZOQ;
 class oneshot_event_t {
   public:
     oneshot_event_t(scheduler_itf& s, const callback_t& cb) : _e{s, cb} {}
-    void start(uint32_t period) { _e.arm(period, 0); };
-    void stop() { _e.disarm(); };
-    bool is_armed() const { return _e.armed(); }
+    void arm(uint32_t period) { _e.arm(period, 0); };
+    void disarm() { _e.disarm(); };
+    bool armed() const { return _e.armed(); }
 
   private:
     event_t _e;
@@ -23,9 +23,9 @@ class oneshot_event_t {
 class periodic_event_t {
   public:
     periodic_event_t(scheduler_itf& s, const callback_t& cb) : _e{s, cb} {}
-    void start(uint32_t period) { _e.arm(0, period); }
-    void stop() { _e.disarm(); }
-    bool is_armed() const { return _e.armed(); }
+    void arm(uint32_t period) { _e.arm(0, period); }
+    void disarm() { _e.disarm(); }
+    bool armed() const { return _e.armed(); }
 
   private:
     event_t _e;
