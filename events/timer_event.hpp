@@ -3,7 +3,7 @@
 #include <cstdint>
 
 #include "ZOQ/callback.hpp"
-#include "event.hpp"
+#include "ZOQ/events/event.hpp"
 
 namespace ZOQ::stm32_hal::stm32f4xx::timers {
 
