@@ -11,7 +11,7 @@ using namespace ZOQ::itf;
 
 class event_t {
   public:
-    event_t(scheduler_itf& s, const callback_t& cb);
+    constexpr event_t(scheduler_itf& s, const callback_t& cb) : _cb{cb} { s.add(this); }
     // Запускает отложенное событие
     // ctr - число тиков через которое выполнится отложенное событие
     // interval - интервал для перезагрузки таймера
