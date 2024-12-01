@@ -5,8 +5,6 @@
 
 namespace ZOQ {
 
-
-
 void event_t::tick()
 {
     if (0 == _ctr)  // timer disarmed
