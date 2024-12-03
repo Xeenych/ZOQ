@@ -1,10 +1,6 @@
 #pragma once
 
-#include "stm32f4xx.h"
-extern "C" {
-#include "cmsis_compiler.h"
-}
-
+#include "ZOQ/stm32/stm32.hpp"
 inline uint32_t save_interrupt()
 {
     uint32_t mask = __get_PRIMASK();
