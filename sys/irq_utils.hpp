@@ -1,5 +1,6 @@
 #pragma once
 
+#include "stm32f4xx.h"
 extern "C" {
 #include "cmsis_compiler.h"
 }
@@ -21,6 +22,15 @@ class critical_section_t {
   public:
     critical_section_t() : _value{save_interrupt()} {}
     ~critical_section_t() { restore_interrupt(_value); }
+
+  private:
+    const uint32_t _value;
+};
+
+class priority_section_t {
+  public:
+    priority_section_t(uint32_t level) : _value{__get_BASEPRI()} { __set_BASEPRI_MAX(level << (8 - __NVIC_PRIO_BITS)); }
+    ~priority_section_t() { __set_BASEPRI(_value); }
 
   private:
     const uint32_t _value;
