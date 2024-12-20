@@ -1,5 +1,7 @@
 #include "scheduler.hpp"
 
+#include <cassert>
+
 namespace ZOQ {
 
 scheduler_t::scheduler_t(TIM_HandleTypeDef& htim) : _htim{htim}

@@ -8,12 +8,9 @@ class adc_channel_it_t {
   public:
     using fn_t = void (*)(uint32_t value, void* ctx);
     constexpr adc_channel_it_t(ADC_HandleTypeDef& handle, uint32_t channel, uint32_t sample_time)
-        : _handle(handle), _channel(channel), _sample_time(sample_time)
-    {
-    }
+        : _handle(handle), _channel(channel), _sample_time(sample_time) {}
 
-    constexpr void set_callback(fn_t measure_end_cb, void* measure_end_ctx)
-    {
+    constexpr void set_callback(fn_t measure_end_cb, void* measure_end_ctx) {
         _measure_end_cb = measure_end_cb;
         _measure_end_ctx = measure_end_ctx;
     }
