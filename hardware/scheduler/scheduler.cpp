@@ -10,6 +10,7 @@
 // Used to trigger transceiver operation and scheduler
 // Не используем SysTick, чтобы в прерывании работала фукнция HAL_Delay и переадча по USB для логирования
 // Необходимо поставить приоритет тоу прерыванию в 1, чтобы оно было менее приоритетным чем USB и SysTick
+/*
 extern "C" void TIM17_IRQHandler(void)
 {
     // LOG("HAL_TIM_PeriodElapsedCallback()");
@@ -20,6 +21,7 @@ extern "C" void TIM17_IRQHandler(void)
     // trigger scheduler
     scheduler::event_t::tick();
 }
+*/
 
 namespace scheduler {
 

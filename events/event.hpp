@@ -24,6 +24,9 @@ class event_t {
     // call this on SysTick interrupt
     void tick();
 
+    event_t* next() { return _next; }
+    void set_next(event_t* e) { _next = e; }
+
   private:
     const callback_t _cb;
 
@@ -31,14 +34,14 @@ class event_t {
     std::atomic<uint32_t> _ctr = 0;  //! time event down-counter
     uint32_t _interval = 0;          //! interval for periodic time event
 
-    friend class scheduler_t;
+    friend class scheduler_itf;
 };
 
 class oneshot_event_t {
   public:
     constexpr oneshot_event_t(scheduler_itf& s, const callback_t& cb) : _e{s, cb} {}
-    void arm(uint32_t period) { _e.arm(period, 0); };
-    void disarm() { _e.disarm(); };
+    void arm(uint32_t period) { _e.arm(period, 0); }
+    void disarm() { _e.disarm(); }
     bool armed() const { return _e.armed(); }
 
   private:

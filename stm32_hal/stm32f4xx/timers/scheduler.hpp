@@ -5,7 +5,7 @@
 #include "ZOQ/itf/timers/scheduler_itf.hpp"
 #include "stm32f4xx_hal.h"
 
-namespace ZOQ {
+namespace ZOQ::stm32_hal::stm32f4xx::timers {
 
 // class event_t;
 class scheduler_t : public scheduler_itf {
@@ -25,4 +25,4 @@ class scheduler_t : public scheduler_itf {
     friend class event_t;
 };
 
-}  // namespace ZOQ
+}  // namespace ZOQ::stm32_hal::stm32f4xx::timers
