@@ -11,7 +11,7 @@ using namespace ZOQ::itf;
 
 class event_t {
   public:
-    constexpr event_t(scheduler_itf& s, const callback_t& cb) : _cb{cb} { s.add(this); }
+    event_t(scheduler_itf& s, const callback_t& cb);
     // Запускает отложенное событие
     // ctr - число тиков через которое выполнится отложенное событие
     // interval - интервал для перезагрузки таймера
@@ -39,7 +39,7 @@ class event_t {
 
 class oneshot_event_t {
   public:
-    constexpr oneshot_event_t(scheduler_itf& s, const callback_t& cb) : _e{s, cb} { s.add(&_e); }
+    oneshot_event_t(scheduler_itf& s, const callback_t& cb) : _e{s, cb} {}
     void arm(uint32_t period) { _e.arm(period, 0); }
     void disarm() { _e.disarm(); }
     bool armed() const { return _e.armed(); }
@@ -50,7 +50,7 @@ class oneshot_event_t {
 
 class periodic_event_t {
   public:
-    constexpr periodic_event_t(scheduler_itf& s, const callback_t& cb) : _e{s, cb} { s.add(&_e); }
+    periodic_event_t(scheduler_itf& s, const callback_t& cb) : _e{s, cb} {}
     void arm(uint32_t period) { _e.arm(0, period); }
     void disarm() { _e.disarm(); }
     bool armed() const { return _e.armed(); }
