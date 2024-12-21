@@ -1,12 +1,11 @@
-
 #include "event.hpp"
 
 #include "sys/irq_utils.hpp"
+#include "sys/logging.hpp"
 
 namespace ZOQ {
 
-void event_t::tick()
-{
+void event_t::tick() {
     if (0 == _ctr)  // timer disarmed
         return;
 
@@ -17,15 +16,13 @@ void event_t::tick()
     --_ctr;
 }
 
-void event_t::arm(uint32_t ctr, uint32_t interval)
-{
+void event_t::arm(uint32_t ctr, uint32_t interval) {
     critical_section_t s;
     _ctr = ctr;
     _interval = interval;
 }
 
-void event_t::disarm(void)
-{
+void event_t::disarm(void) {
     critical_section_t s;
     _ctr = 0U;
     _interval = 0U;

@@ -7,7 +7,6 @@
 
 namespace ZOQ::stm32_hal::stm32f4xx::timers {
 
-// class event_t;
 class scheduler_t : public scheduler_itf {
   public:
     scheduler_t(TIM_HandleTypeDef& htim);
