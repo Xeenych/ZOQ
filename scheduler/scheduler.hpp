@@ -1,14 +1,19 @@
 #pragma once
 #include <cassert>
 
+#include "ZOQ/itf/timers/it_timer_itf.hpp"
 #include "ZOQ/scheduler/event.hpp"
 #include "ZOQ/scheduler/scheduler_itf.hpp"
 
 namespace ZOQ::scheduler {
 
+using namespace ZOQ::itf;
+
 class scheduler_t : public scheduler_itf {
   public:
-    constexpr scheduler_t() = default;
+    constexpr scheduler_t(it_timer_itf& t) : _t{t} {
+        _t.set_callback({+[](scheduler_t* arg) { arg->tick(); }, this});
+    }
     // Обрабатываем ивенты за два прохода, чтобы исключить ситуацию, когда внутри ивента заряжеается другой ивент. Тогда
     // его счетчик может быть уменьшен на 1 в этом же цикле
     void tick() {
@@ -29,15 +34,16 @@ class scheduler_t : public scheduler_itf {
     scheduler_t(const scheduler_t&) = delete;
     scheduler_t& operator=(const scheduler_t&) = delete;
 
-  private:
-    event_t* _head = nullptr;
+    ~scheduler_t() { _t.set_callback({}); }
 
     void add(event_t* e) override {
         e->set_next(_head);
         _head = e;
     }
 
-    friend class event_t;
+  private:
+    it_timer_itf& _t;
+    event_t* _head = nullptr;
 };
 
 }  // namespace ZOQ::scheduler

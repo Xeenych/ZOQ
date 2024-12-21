@@ -2,12 +2,14 @@
 
 #include <cassert>
 
+#include "ZOQ/itf/timers/it_timer_itf.hpp"
 #include "stm32f4xx_hal_tim.h"
-#include "timer_itf.hpp"
 
 namespace ZOQ::stm32_hal::stm32f4xx::timers {
 
-class basic_it_timer_t : public timer_itf {
+using namespace ZOQ::itf;
+
+class basic_it_timer_t : public it_timer_itf {
   public:
     basic_it_timer_t(TIM_HandleTypeDef& htim) : _htim{htim} {
         auto status = HAL_TIM_Base_Start_IT(&_htim);
@@ -16,11 +18,7 @@ class basic_it_timer_t : public timer_itf {
 
     constexpr void set_callback(const callback_t& cb) override { _callback = cb; }
 
-    void on_interrupt() {
-        assert(__HAL_TIM_GET_FLAG(&_htim, TIM_FLAG_UPDATE) == SET);
-        __HAL_TIM_CLEAR_IT(&_htim, TIM_IT_UPDATE);
-        _callback.execute();
-    }
+    void on_interrupt() { _callback.execute(); }
 
     basic_it_timer_t(const basic_it_timer_t&) = delete;
     basic_it_timer_t& operator=(const basic_it_timer_t&) = delete;

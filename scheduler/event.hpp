@@ -12,6 +12,7 @@ using namespace ZOQ::itf;
 class event_t {
   public:
     event_t(scheduler_itf& s, const callback_t& cb);
+    ~event_t();
     // Запускает отложенное событие
     // ctr - число тиков через которое выполнится отложенное событие
     // interval - интервал для перезагрузки таймера
@@ -34,15 +35,17 @@ class event_t {
     event_t* next() { return _next; }
     void set_next(event_t* e) { _next = e; }
 
+    event_t(const event_t&) = delete;
+    event_t& operator=(const event_t&) = delete;
+
   private:
+    scheduler_itf& _s;
     const callback_t _cb;
     bool _expiring = false;
 
     event_t* _next = nullptr;        //! link to next time event in a link-list
     std::atomic<uint32_t> _ctr = 0;  //! time event down-counter
     uint32_t _interval = 0;          //! interval for periodic time event
-
-    friend class scheduler_itf;
 };
 
 class oneshot_event_t {
