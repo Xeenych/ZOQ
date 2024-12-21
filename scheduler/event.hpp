@@ -24,11 +24,19 @@ class event_t {
     // call this on SysTick interrupt
     void tick();
 
+    bool is_expiring() const { return _expiring; }
+    void reload() {
+        _ctr = _interval;
+        _expiring = false;
+    }
+    void execute() { _cb.execute(); }
+
     event_t* next() { return _next; }
     void set_next(event_t* e) { _next = e; }
 
   private:
     const callback_t _cb;
+    bool _expiring = false;
 
     event_t* _next = nullptr;        //! link to next time event in a link-list
     std::atomic<uint32_t> _ctr = 0;  //! time event down-counter

@@ -9,9 +9,21 @@ namespace ZOQ::scheduler {
 class scheduler_t : public scheduler_itf {
   public:
     constexpr scheduler_t() = default;
+    // Обрабатываем ивенты за два прохода, чтобы исключить ситуацию, когда внутри ивента заряжеается другой ивент. Тогда
+    // его счетчик может быть уменьшен на 1 в этом же цикле
     void tick() {
+        // За первый проход уменьшаем счетчики
+        // При этом в ивентах, которые должны сработать взводится флаг is_expiring()
         for (event_t* t = _head; t != nullptr; t = t->next())
             t->tick();
+
+        // Во второй проход срабатываем на истекшие ивенты
+        for (event_t* t = _head; t != nullptr; t = t->next()) {
+            if (t->is_expiring()) {
+                t->execute();
+                t->reload();
+            }
+        }
     }
 
     scheduler_t(const scheduler_t&) = delete;
