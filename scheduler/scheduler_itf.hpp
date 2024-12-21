@@ -1,7 +1,5 @@
 #pragma once
 
-// #include "ZOQ/stm32_hal/stm32f4xx/timers/event.hpp"
-
 namespace ZOQ {
 class event_t;
 }
