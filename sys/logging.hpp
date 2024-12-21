@@ -1,7 +1,5 @@
 #pragma once
-
-// Forward declaration
-extern "C" void log_print(const char* fmt, ...);
+#include "log_print.hpp"
 
 #define LOG_D(fmt, ...)                         \
     do {                                        \
