@@ -10,16 +10,20 @@ class callback_itf {
 
 class callback_t {
   public:
-    template <typename T>
-    using fn_t = void (*)(T*);
+    template <typename T, typename... Args>
+    using fn_t = void (*)(T*, Args...);
 
     constexpr callback_t() = default;
 
-    template <typename T>
-    constexpr callback_t(const fn_t<T>& fn, void* arg) : _fn{reinterpret_cast<fn_t<void>>(fn)}, _arg{arg} {}
-    constexpr void execute() const {
-        if (_fn)
-            _fn(_arg);
+    template <typename T, typename... Args>
+    constexpr callback_t(const fn_t<T, Args...>& fn, void* arg) : _fn{reinterpret_cast<fn_t<void>>(fn)}, _arg{arg} {}
+
+    template <typename... Args>
+    constexpr void execute(Args... a) const {
+        if (_fn) {
+            auto f = reinterpret_cast<fn_t<void, Args...>>(_fn);
+            f(_arg, a...);
+        }
     }
     constexpr bool valid() const { return _fn; }
     constexpr void clear() { _fn = nullptr; }
