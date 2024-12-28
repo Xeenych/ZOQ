@@ -16,7 +16,7 @@ class io_pin_t final : public io_pin_itf {
         else
             reset();
 
-        GPIO_InitTypeDef GPIO_InitStruct = {0};
+        GPIO_InitTypeDef GPIO_InitStruct{};
         GPIO_InitStruct.Pin = p.pin;
         GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
         GPIO_InitStruct.Pull = GPIO_NOPULL;

@@ -17,7 +17,7 @@ class io_pin_it_t final : public it_pin_itf {
     //    - GPIO_MODE_IT_FALLING
     //    - GPIO_MODE_EVT_RISING_FALLING
     io_pin_it_t(const pin_name_t& p, uint32_t mode) : _p{p} {
-        GPIO_InitTypeDef GPIO_InitStruct = {0};
+        GPIO_InitTypeDef GPIO_InitStruct{};
         GPIO_InitStruct.Pin = p.pin;
         GPIO_InitStruct.Mode = mode;
         GPIO_InitStruct.Pull = GPIO_NOPULL;
