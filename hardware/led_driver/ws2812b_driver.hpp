@@ -7,6 +7,10 @@ namespace ZOQ::hardware::led_driver {
 
 using namespace ZOQ::itf;
 
+// Драйвер WS2812b
+// Использует SPI
+// Посылка 8 бит
+// Частота SPI должна быть 3.33 МГц
 template <size_t NUM_LEDS>
 class ws2812b_t {
   public:
