@@ -62,7 +62,7 @@ class oneshot_event_t {
 class periodic_event_t {
   public:
     constexpr periodic_event_t(scheduler_itf& s, const callback_t& cb) : _e{s, cb} {}
-    void arm(uint32_t period) { _e.arm(0, period); }
+    void arm(uint32_t period) { _e.arm(1, period); }
     void disarm() { _e.disarm(); }
     bool armed() const { return _e.armed(); }
 
