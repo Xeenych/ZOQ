@@ -11,6 +11,7 @@ using namespace ZOQ::itf;
 // Использует SPI
 // Посылка 8 бит
 // Частота SPI должна быть 3.33 МГц
+// SPI_PHASE_2EDGE
 template <size_t NUM_LEDS>
 class ws2812b_t {
   public:
