@@ -15,7 +15,7 @@ using namespace ZOQ::itf;
 template <size_t NUM_LEDS>
 class ws2812b_t {
   public:
-    constexpr ws2812b_t(spi_itf& spi) : _spi(spi){};
+    constexpr ws2812b_t(spi_itf& spi) : _spi(spi) {};
     constexpr size_t num_leds() const { return NUM_LEDS; }
 
     void set_led(uint8_t r, uint8_t g, uint8_t b, size_t led_n);
@@ -33,8 +33,7 @@ class ws2812b_t {
 };
 
 template <size_t NUM_LEDS>
-void ws2812b_t<NUM_LEDS>::set_led(uint8_t r, uint8_t g, uint8_t b, size_t led_n)
-{
+void ws2812b_t<NUM_LEDS>::set_led(uint8_t r, uint8_t g, uint8_t b, size_t led_n) {
     assert(led_n < NUM_LEDS);
     uint8_t* ptr = _out_data + led_n * 12;
     ptr[0] = _bit_table[(g >> 6) & 0x03];
@@ -54,23 +53,20 @@ void ws2812b_t<NUM_LEDS>::set_led(uint8_t r, uint8_t g, uint8_t b, size_t led_n)
 }
 
 template <size_t NUM_LEDS>
-void ws2812b_t<NUM_LEDS>::clear()
-{
+void ws2812b_t<NUM_LEDS>::clear() {
     for (size_t led_idx = 0; led_idx < NUM_LEDS; led_idx++)
         set_led(0, 0, 0, led_idx);
 }
 
 template <size_t NUM_LEDS>
-void ws2812b_t<NUM_LEDS>::reset()
-{
+void ws2812b_t<NUM_LEDS>::reset() {
     for (auto& i : _out_data)
         i = 0;
     apply();
 }
 
 template <size_t NUM_LEDS>
-void ws2812b_t<NUM_LEDS>::apply()
-{
+void ws2812b_t<NUM_LEDS>::apply() {
     // data[12 * NUM_LEDS] = 0;
     _spi.write(_out_data);
 }
