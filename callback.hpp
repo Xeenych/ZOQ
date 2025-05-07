@@ -23,7 +23,7 @@ class callback_t {
             _fn(_arg);
         }
     }
-    constexpr bool valid() const { return _fn; }
+    [[nodiscard]] constexpr bool valid() const { return _fn; }
     constexpr void clear() { _fn = nullptr; }
 
   private:
@@ -37,7 +37,7 @@ template <typename T>
 struct callback_T : callback_itf {
     using fn_t = void (T::*)();
     inline callback_T(fn_t f, T* instance) : _f(f), _instance(instance) {};
-    inline void execute() { (_instance->*_f)(); }
+    inline void execute() override { (_instance->*_f)(); }
     fn_t _f;
     T* _instance;
 };

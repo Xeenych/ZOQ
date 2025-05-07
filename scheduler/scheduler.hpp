@@ -1,5 +1,4 @@
 #pragma once
-#include <cassert>
 
 #include "ZOQ/itf/timers/it_timer_itf.hpp"
 #include "ZOQ/scheduler/event.hpp"
@@ -7,11 +6,11 @@
 
 namespace ZOQ::scheduler {
 
-using namespace ZOQ::itf;
+using ZOQ::itf::it_timer_itf;
 
 class scheduler_t : public scheduler_itf {
   public:
-    constexpr scheduler_t(it_timer_itf& t) : _t{t} {
+    constexpr explicit scheduler_t(it_timer_itf& t) : _t{t} {
         _t.set_callback({+[](scheduler_t* arg) { arg->tick(); }, this});
     }
     // Обрабатываем ивенты за три прохода, чтобы исключить ситуацию, когда внутри ивента заряжеается другой ивент. Тогда
@@ -39,7 +38,7 @@ class scheduler_t : public scheduler_itf {
     scheduler_t(const scheduler_t&) = delete;
     scheduler_t& operator=(const scheduler_t&) = delete;
 
-    ~scheduler_t() { _t.set_callback({}); }
+    ~scheduler_t() override { _t.set_callback({}); }
 
     void add(event_t* e) override {
         e->set_next(_head);

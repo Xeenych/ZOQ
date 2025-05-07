@@ -25,7 +25,7 @@ class event_t {
     // call this on SysTick interrupt
     void tick();
 
-    bool is_expiring() const { return _expiring; }
+    [[nodiscard]] bool is_expiring() const { return _expiring; }
     void reload() {
         _ctr = _interval;
         _expiring = false;
@@ -53,7 +53,7 @@ class oneshot_event_t {
     constexpr oneshot_event_t(scheduler_itf& s, const callback_t& cb) : _e{s, cb} {}
     void arm(uint32_t period) { _e.arm(period, 0); }
     void disarm() { _e.disarm(); }
-    bool armed() const { return _e.armed(); }
+    [[nodiscard]] bool armed() const { return _e.armed(); }
 
   private:
     event_t _e;
@@ -64,7 +64,7 @@ class periodic_event_t {
     constexpr periodic_event_t(scheduler_itf& s, const callback_t& cb) : _e{s, cb} {}
     void arm(uint32_t period) { _e.arm(1, period); }
     void disarm() { _e.disarm(); }
-    bool armed() const { return _e.armed(); }
+    [[nodiscard]] bool armed() const { return _e.armed(); }
 
   private:
     event_t _e;

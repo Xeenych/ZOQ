@@ -4,11 +4,13 @@
 // #include "ZOQ/itf/gpio/io_pin_itf.hpp"
 #include "ZOQ/itf/gpio/it_pin_itf.hpp"
 #include "ZOQ/stm32/stm32f4xx/gpio/pin_name.hpp"
+#include "callback.hpp"
 #include "stm32f4xx_ll_exti.h"
 
 namespace ZOQ::stm32::stm32f4xx::gpio {
 
 using namespace ZOQ::itf;
+using ZOQ::callback_t;
 
 class io_pin_it_t final : public it_pin_itf {
   public:
@@ -25,7 +27,7 @@ class io_pin_it_t final : public it_pin_itf {
         HAL_GPIO_Init(p.port, &GPIO_InitStruct);
     }
 
-    constexpr void set_callback(const callback_t& cb) { _callback = cb; }
+    void set_callback(const callback_t& cb) { _callback = cb; }
 
     constexpr void set() { _p.port->BSRR = _p.pin; }
     constexpr void reset() { _p.port->BSRR = (uint32_t)(_p.pin << 16U); }
