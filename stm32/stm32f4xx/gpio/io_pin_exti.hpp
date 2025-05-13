@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ZOQ/callback.hpp"
-// #include "ZOQ/itf/gpio/io_pin_itf.hpp"
 #include "ZOQ/itf/gpio/it_pin_itf.hpp"
 #include "ZOQ/stm32/stm32f4xx/gpio/pin_name.hpp"
 #include "callback.hpp"
@@ -14,7 +13,7 @@ namespace ZOQ::stm32::stm32f4xx::gpio {
 using namespace ZOQ::itf;
 using ZOQ::callback_t;
 
-class io_pin_it_t final : public it_pin_itf {
+class io_pin_exti_t final : public it_pin_itf {
   public:
     // mode:
     //    - LL_EXTI_TRIGGER_NONE
@@ -34,10 +33,15 @@ class io_pin_it_t final : public it_pin_itf {
     //      - LL_EXTI_LINE_xx
     // irqn:
     //      - EXTI9_5_IRQn
-    io_pin_it_t(const pin_name_t& p, uint32_t mode, uint32_t pull, uint32_t speed, uint32_t line, IRQn_Type irqn,
-                uint32_t priority)
+    // syscfg_port:
+    //      - LL_SYSCFG_EXTI_PORTA
+    //      - LL_SYSCFG_EXTI_PORTC
+    // syscfg_line:
+    //      - LL_SYSCFG_EXTI_LINE13
+    io_pin_exti_t(const pin_name_t& p, uint32_t mode, uint32_t pull, uint32_t speed, uint32_t line, IRQn_Type irqn,
+                  uint32_t priority, uint32_t syscfg_port, uint32_t syscfg_line)
         : _p{p} {
-        LL_SYSCFG_SetEXTISource(LL_SYSCFG_EXTI_PORTC, LL_SYSCFG_EXTI_LINE13);
+        LL_SYSCFG_SetEXTISource(syscfg_port, syscfg_line);
 
         LL_GPIO_SetPinPull(p.port, p.pin, pull);
         LL_GPIO_SetPinSpeed(p.port, p.pin, speed);
@@ -53,16 +57,10 @@ class io_pin_it_t final : public it_pin_itf {
         NVIC_SetPriority(irqn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), priority, 0));
         NVIC_EnableIRQ(irqn);
     }
-    io_pin_it_t(const io_pin_it_t&) = delete;
-    io_pin_it_t& operator=(const io_pin_it_t&) = delete;
+    io_pin_exti_t(const io_pin_exti_t&) = delete;
+    io_pin_exti_t& operator=(const io_pin_exti_t&) = delete;
 
     void set_callback(const callback_t& cb) override { _callback = cb; }
-
-    constexpr void set() const { _p.port->BSRR = _p.pin; }
-    constexpr void reset() const { _p.port->BSRR = (_p.pin << 16U); }
-    [[nodiscard]] bool get() const { return ((_p.port->IDR & _p.pin) != GPIO_PIN_RESET); }
-
-    ~io_pin_it_t() override { HAL_GPIO_DeInit(_p.port, _p.pin); }
 
     void EXTI_IRQHandler() {
         if (!is_interrupt())
