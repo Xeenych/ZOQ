@@ -6,8 +6,8 @@
 
 namespace ZOQ::stm32::stm32f4xx::gpio {
 
-using namespace ZOQ::itf;
-using namespace ZOQ::stm32::stm32f4xx::gpio;
+using ZOQ::itf::o_pin_itf;
+using ZOQ::stm32::stm32f4xx::gpio::pin_name_t;
 
 class o_pin_t final : public o_pin_itf {
   public:
@@ -23,8 +23,7 @@ class o_pin_t final : public o_pin_itf {
     // * LL_GPIO_SPEED_FREQ_MEDIUM
     // * LL_GPIO_SPEED_FREQ_HIGH
     // * LL_GPIO_SPEED_FREQ_VERY_HIGH
-    o_pin_t(const pin_name_t& p, uint32_t output_type, uint32_t pull, uint32_t speed) : _port(p.port), _pin(p.pin)
-    {
+    o_pin_t(const pin_name_t& p, uint32_t output_type, uint32_t pull, uint32_t speed) : _port(p.port), _pin(p.pin) {
         LL_GPIO_SetPinOutputType(p.port, p.pin, output_type);
         LL_GPIO_SetPinPull(p.port, p.pin, pull);
         LL_GPIO_SetPinSpeed(p.port, p.pin, speed);
@@ -35,10 +34,10 @@ class o_pin_t final : public o_pin_itf {
     o_pin_t& operator=(const o_pin_t&) = delete;
 
     void set() override { _port->BSRR = _pin; }
-    void reset() override { _port->BSRR = (uint32_t)(_pin << 16U); }
+    void reset() override { _port->BSRR = (_pin << 16U); }
 
   private:
-    GPIO_TypeDef* const _port = nullptr;
+    GPIO_TypeDef* const _port{};
     const uint32_t _pin = 0;
 };
 

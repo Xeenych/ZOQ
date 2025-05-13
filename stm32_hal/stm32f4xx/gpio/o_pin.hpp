@@ -4,7 +4,7 @@
 
 #include "ZOQ/itf/gpio/o_pin_itf.hpp"
 #include "ZOQ/stm32/stm32f4xx/gpio/pin_name.hpp"
-#include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal_gpio.h"
 
 namespace ZOQ::stm32_hal::stm32f4xx::gpio {
 using namespace ZOQ::stm32::stm32f4xx::gpio;
@@ -25,14 +25,14 @@ class o_pin_t : public itf::o_pin_itf {
         HAL_GPIO_Init(p.port, &GPIO_InitStruct);
     }
     constexpr void set() override { _port->BSRR = _pin; }
-    constexpr void reset() override { _port->BSRR = (uint32_t)(_pin << 16U); }
+    constexpr void reset() override { _port->BSRR = (_pin << 16U); }
 
-    ~o_pin_t() { HAL_GPIO_DeInit(_port, _pin); }
+    ~o_pin_t() override { HAL_GPIO_DeInit(_port, _pin); }
 
     o_pin_t(const o_pin_t&) = delete;
     o_pin_t& operator=(const o_pin_t&) = delete;
 
-  protected:
+  private:
     GPIO_TypeDef* const _port = nullptr;
     const uint32_t _pin = 0;
 };
