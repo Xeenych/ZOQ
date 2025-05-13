@@ -1,13 +1,16 @@
 #pragma once
 
 #include "stm32f4xx_hal.h"
+#include <span>
 
 namespace ZOQ::stm32_hal::stm32f4xx::uart {
 
 class uart_it_t {
   public:
     using callback_t = void (*)(void* ctx, std::span<uint8_t> data);
-    uart_it_t(UART_HandleTypeDef& huart) : _huart{huart} { HAL_UART_Receive_IT(&_huart, &_d, 1); }
+    explicit uart_it_t(UART_HandleTypeDef& huart) : _huart{huart} { HAL_UART_Receive_IT(&_huart, &_d, 1); }
+    uart_it_t(const uart_it_t&) = delete;
+    uart_it_t& operator=(const uart_it_t&) = delete;
 
     constexpr void set_callback(void* ctx, callback_t cb) { _ctx = ctx, _cb = cb; }
 
