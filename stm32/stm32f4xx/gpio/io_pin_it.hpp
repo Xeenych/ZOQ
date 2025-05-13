@@ -26,19 +26,21 @@ class io_pin_it_t final : public it_pin_itf {
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
         HAL_GPIO_Init(p.port, &GPIO_InitStruct);
     }
+    io_pin_it_t(const io_pin_it_t&) = delete;
+    io_pin_it_t& operator=(const io_pin_it_t&) = delete;
 
-    void set_callback(const callback_t& cb) { _callback = cb; }
+    void set_callback(const callback_t& cb) override { _callback = cb; }
 
-    constexpr void set() { _p.port->BSRR = _p.pin; }
-    constexpr void reset() { _p.port->BSRR = (uint32_t)(_p.pin << 16U); }
-    bool get() { return ((_p.port->IDR & _p.pin) != (uint32_t)GPIO_PIN_RESET); }
+    constexpr void set() const { _p.port->BSRR = _p.pin; }
+    constexpr void reset() const { _p.port->BSRR = (_p.pin << 16U); }
+    [[nodiscard]] bool get() const { return ((_p.port->IDR & _p.pin) != GPIO_PIN_RESET); }
 
-    ~io_pin_it_t() { HAL_GPIO_DeInit(_p.port, _p.pin); }
+    ~io_pin_it_t() override { HAL_GPIO_DeInit(_p.port, _p.pin); }
 
     void EXTI_IRQHandler() {
-        if (!LL_EXTI_IsActiveFlag_0_31(_p.pin))
+        if (!is_interrupt())
             return;
-        LL_EXTI_ClearFlag_0_31(_p.pin);
+        clear_interrupt();
         _callback.execute();
     }
 
@@ -46,8 +48,11 @@ class io_pin_it_t final : public it_pin_itf {
     const pin_name_t _p;
     callback_t _callback{};
 
-    io_pin_it_t(const io_pin_it_t&) = delete;
-    io_pin_it_t& operator=(const io_pin_it_t&) = delete;
+    //[[nodiscard]] bool is_interrupt() const { return (RESET != __HAL_GPIO_EXTI_GET_IT(_p.pin)); }
+    // void clear_interrupt() const { __HAL_GPIO_EXTI_CLEAR_IT(_p.pin); }
+
+    [[nodiscard]] bool is_interrupt() const { return (RESET != LL_EXTI_IsActiveFlag_0_31(_p.pin)); }
+    void clear_interrupt() const { LL_EXTI_ClearFlag_0_31(_p.pin); }
 };
 
 }  // namespace ZOQ::stm32::stm32f4xx::gpio
