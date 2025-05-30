@@ -2,7 +2,6 @@
 
 #include "ZOQ/itf/gpio/it_pin_itf.hpp"
 #include "ZOQ/stm32/stm32f4xx/gpio/pin_name.hpp"
-#include "stm32f4xx_ll_exti.h"
 
 namespace ZOQ::stm32::stm32f4xx::gpio {
 
@@ -37,22 +36,11 @@ class io_pin_it_t final : public it_pin_itf {
 
     ~io_pin_it_t() override { HAL_GPIO_DeInit(_p.port, _p.pin); }
 
-    void EXTI_IRQHandler() {
-        if (!is_interrupt())
-            return;
-        clear_interrupt();
-        _callback.Execute();
-    }
+    void EXTI_IRQHandler() { _callback.Execute(); }
 
   private:
     const pin_name_t _p;
     callback_t _callback{};
-
-    //[[nodiscard]] bool is_interrupt() const { return (RESET != __HAL_GPIO_EXTI_GET_IT(_p.pin)); }
-    // void clear_interrupt() const { __HAL_GPIO_EXTI_CLEAR_IT(_p.pin); }
-
-    [[nodiscard]] bool is_interrupt() const { return (RESET != LL_EXTI_IsActiveFlag_0_31(_p.pin)); }
-    void clear_interrupt() const { LL_EXTI_ClearFlag_0_31(_p.pin); }
 };
 
 }  // namespace ZOQ::stm32::stm32f4xx::gpio
