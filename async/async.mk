@@ -1,1 +1,0 @@
-CXX_SOURCES += ${ZOQ_ROOT}/async/event_loop.cpp
