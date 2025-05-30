@@ -2,14 +2,12 @@
 
 #include "stm32f4xx_hal.h"
 #include <span>
-#include <cassert>
 #include "ZOQ/utils/callback.hpp"
 
 namespace ZOQ::stm32_hal::stm32f4xx::uart {
 
 class uart_it_t {
   public:
-    // using callback_t = void (*)(void* ctx, std::span<uint8_t> data);
     using callback_t = ZOQ::utils::Callback<std::span<uint8_t>>;
 
     explicit uart_it_t(UART_HandleTypeDef& h);
