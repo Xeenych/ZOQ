@@ -14,11 +14,15 @@ class io_pin_it_t final : public it_pin_itf {
     //    - GPIO_MODE_IT_RISING
     //    - GPIO_MODE_IT_FALLING
     //    - GPIO_MODE_EVT_RISING_FALLING
-    io_pin_it_t(const pin_name_t& p, uint32_t mode) : _p{p} {
+    // pull:
+    //    - GPIO_NOPULL
+    //    - GPIO_PULLUP
+    //    - GPIO_PULLDOWN
+    io_pin_it_t(const pin_name_t& p, uint32_t mode, uint32_t pull) : _p{p} {
         GPIO_InitTypeDef GPIO_InitStruct{};
         GPIO_InitStruct.Pin = p.pin;
         GPIO_InitStruct.Mode = mode;
-        GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Pull = pull;
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
         HAL_GPIO_Init(p.port, &GPIO_InitStruct);
     }
