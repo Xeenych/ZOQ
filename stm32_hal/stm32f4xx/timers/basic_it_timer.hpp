@@ -11,7 +11,7 @@ using namespace ZOQ::itf;
 
 class basic_it_timer_t : public it_timer_itf {
   public:
-    basic_it_timer_t(TIM_HandleTypeDef& htim) : _htim{htim} {
+    explicit basic_it_timer_t(TIM_HandleTypeDef& htim) : _htim{htim} {
         auto status = HAL_TIM_Base_Start_IT(&_htim);
         assert(HAL_OK == status);
     }
