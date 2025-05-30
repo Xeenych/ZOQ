@@ -1,9 +1,7 @@
 #pragma once
 
-#include "ZOQ/callback.hpp"
 #include "ZOQ/itf/gpio/it_pin_itf.hpp"
 #include "ZOQ/stm32/stm32f4xx/gpio/pin_name.hpp"
-#include "callback.hpp"
 #include "stm32f4xx_ll_gpio.h"
 #include "stm32f4xx_ll_exti.h"
 #include "stm32f4xx_ll_system.h"
@@ -11,7 +9,6 @@
 namespace ZOQ::stm32::stm32f4xx::gpio {
 
 using namespace ZOQ::itf;
-using ZOQ::callback_t;
 
 class io_pin_exti_t final : public it_pin_itf {
   public:
@@ -66,7 +63,7 @@ class io_pin_exti_t final : public it_pin_itf {
         if (!is_interrupt())
             return;
         clear_interrupt();
-        _callback.execute();
+        _callback.Execute();
     }
 
   private:

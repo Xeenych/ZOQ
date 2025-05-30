@@ -14,8 +14,8 @@ void uart_it_t::write(const std::span<const uint8_t>& data) {
 void uart_it_t::OnRxCpltCallback(UART_HandleTypeDef* h) {
     if (h != &_h)
         return;
-    _cb.Execute({&_d, 1});
     HAL_UART_Receive_IT(&_h, &_d, 1);
+    _cb.Execute({&_d, 1});
 }
 
 }  // namespace ZOQ::stm32_hal::stm32f4xx::uart

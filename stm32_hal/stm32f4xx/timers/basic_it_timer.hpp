@@ -18,12 +18,12 @@ class basic_it_timer_t : public it_timer_itf {
 
     constexpr void set_callback(const callback_t& cb) override { _callback = cb; }
 
-    void on_interrupt() { _callback.execute(); }
+    void on_interrupt() { _callback.Execute(); }
 
     basic_it_timer_t(const basic_it_timer_t&) = delete;
     basic_it_timer_t& operator=(const basic_it_timer_t&) = delete;
 
-    ~basic_it_timer_t() {
+    ~basic_it_timer_t() override {
         auto status = HAL_TIM_Base_Stop_IT(&_htim);
         assert(HAL_OK == status);
     }

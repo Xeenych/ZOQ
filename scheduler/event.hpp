@@ -2,7 +2,7 @@
 
 #include <atomic>
 
-#include "ZOQ/callback.hpp"
+#include "ZOQ/utils/callback.hpp"
 #include "ZOQ/scheduler/scheduler_itf.hpp"
 
 namespace ZOQ {
@@ -10,6 +10,8 @@ namespace ZOQ {
 using namespace ZOQ::itf;
 
 class event_t {
+    using callback_t = ZOQ::utils::Callback<>;
+
   public:
     constexpr event_t(scheduler_itf& s, const callback_t& cb) : _s{s}, _cb{cb} { s.add(this); }
     ~event_t();
@@ -30,7 +32,7 @@ class event_t {
         _ctr = _interval;
         _expiring = false;
     }
-    void execute() const { _cb.execute(); }
+    void execute() const { _cb.Execute(); }
 
     event_t* next() const { return _next; }
     void set_next(event_t* e) { _next = e; }
@@ -49,6 +51,8 @@ class event_t {
 };
 
 class oneshot_event_t {
+    using callback_t = ZOQ::utils::Callback<>;
+
   public:
     constexpr oneshot_event_t(scheduler_itf& s, const callback_t& cb) : _e{s, cb} {}
     void arm(uint32_t period) { _e.arm(period, 0); }
@@ -60,6 +64,8 @@ class oneshot_event_t {
 };
 
 class periodic_event_t {
+    using callback_t = ZOQ::utils::Callback<>;
+
   public:
     constexpr periodic_event_t(scheduler_itf& s, const callback_t& cb) : _e{s, cb} {}
     void arm(uint32_t period) { _e.arm(1, period); }
