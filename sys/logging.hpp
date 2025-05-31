@@ -1,5 +1,5 @@
 #pragma once
-#include "log_print.hpp"
+#include "sys/log_print.hpp"
 
 #ifdef LOG_ENABLE
 #define LOG_D(fmt, ...)                                             \

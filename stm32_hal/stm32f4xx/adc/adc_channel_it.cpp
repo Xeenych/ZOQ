@@ -4,7 +4,7 @@
 
 #include <cassert>
 
-#include "logging.h"
+#include "sys/logging.h"
 
 namespace ZOQ::stm32_hal::stm32f4xx::adc {
 
