@@ -5,8 +5,6 @@
 
 namespace ZOQ::hardware::led_driver {
 
-using namespace ZOQ::itf;
-
 // Драйвер WS2812b
 // Использует SPI
 // Посылка 8 бит
@@ -14,9 +12,14 @@ using namespace ZOQ::itf;
 // SPI_PHASE_2EDGE
 template <size_t NUM_LEDS>
 class ws2812b_t {
+    using spi_itf = ZOQ::itf::spi_itf;
+
   public:
-    constexpr ws2812b_t(spi_itf& spi) : _spi(spi) {};
-    constexpr size_t num_leds() const { return NUM_LEDS; }
+    constexpr explicit ws2812b_t(spi_itf& spi) : _spi{spi} {}
+    ws2812b_t(const ws2812b_t&) = delete;
+    ws2812b_t& operator=(const ws2812b_t&) = delete;
+
+    [[nodiscard]] constexpr size_t num_leds() const { return NUM_LEDS; }
 
     void set_led(uint8_t r, uint8_t g, uint8_t b, size_t led_n);
     void clear();
