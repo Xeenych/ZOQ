@@ -27,7 +27,7 @@ class io_pin_t final : public io_pin_itf {
     }
     void set() override { _port->BSRR = _pin; }
     void reset() override { _port->BSRR = (_pin << 16U); }
-    bool get() override { return ((_port->IDR & _pin) != static_cast<uint32_t>(GPIO_PIN_RESET)); }
+    [[nodiscard]] bool get() const override { return ((_port->IDR & _pin) != static_cast<uint32_t>(GPIO_PIN_RESET)); }
 
     io_pin_t(const io_pin_t&) = delete;
     io_pin_t& operator=(const io_pin_t&) = delete;
