@@ -10,4 +10,4 @@ class i_pin_it_itf {
     virtual ~i_pin_it_itf() = default;
 };
 
-}  // namespace itf
+}  // namespace ZOQ::itf
