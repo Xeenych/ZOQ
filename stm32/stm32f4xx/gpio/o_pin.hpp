@@ -1,13 +1,11 @@
 #pragma once
 
 #include "ZOQ/itf/gpio/o_pin_itf.hpp"
-#include "ZOQ/stm32/stm32f4xx/gpio/pin_name.hpp"
 #include "stm32f4xx_ll_gpio.h"
 
 namespace ZOQ::stm32::stm32f4xx::gpio {
 
 using ZOQ::itf::o_pin_itf;
-using ZOQ::stm32::stm32f4xx::gpio::pin_name_t;
 
 class o_pin_t final : public o_pin_itf {
   public:
@@ -23,11 +21,12 @@ class o_pin_t final : public o_pin_itf {
     // * LL_GPIO_SPEED_FREQ_MEDIUM
     // * LL_GPIO_SPEED_FREQ_HIGH
     // * LL_GPIO_SPEED_FREQ_VERY_HIGH
-    o_pin_t(const pin_name_t& p, uint32_t output_type, uint32_t pull, uint32_t speed) : _port(p.port), _pin(p.pin) {
-        LL_GPIO_SetPinOutputType(p.port, p.pin, output_type);
-        LL_GPIO_SetPinPull(p.port, p.pin, pull);
-        LL_GPIO_SetPinSpeed(p.port, p.pin, speed);
-        LL_GPIO_SetPinMode(p.port, p.pin, LL_GPIO_MODE_OUTPUT);
+    o_pin_t(GPIO_TypeDef* port, uint32_t pin, uint32_t output_type, uint32_t pull, uint32_t speed)
+        : _port{port}, _pin{pin} {
+        LL_GPIO_SetPinOutputType(port, pin, output_type);
+        LL_GPIO_SetPinPull(port, pin, pull);
+        LL_GPIO_SetPinSpeed(port, pin, speed);
+        LL_GPIO_SetPinMode(port, pin, LL_GPIO_MODE_OUTPUT);
     }
 
     o_pin_t(const o_pin_t&) = delete;
@@ -37,8 +36,8 @@ class o_pin_t final : public o_pin_itf {
     void reset() override { _port->BSRR = (_pin << 16U); }
 
   private:
-    GPIO_TypeDef* const _port{};
-    const uint32_t _pin = 0;
+    GPIO_TypeDef* const _port;
+    const uint32_t _pin;
 };
 
 }  // namespace ZOQ::stm32::stm32f4xx::gpio
