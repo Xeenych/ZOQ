@@ -19,7 +19,7 @@ class ws2812b_t {
     ws2812b_t(const ws2812b_t&) = delete;
     ws2812b_t& operator=(const ws2812b_t&) = delete;
 
-    [[nodiscard]] constexpr size_t num_leds() const { return NUM_LEDS; }
+    [[nodiscard]] static constexpr size_t num_leds() { return NUM_LEDS; }
 
     void set_led(uint8_t r, uint8_t g, uint8_t b, size_t led_n);
     void clear();
