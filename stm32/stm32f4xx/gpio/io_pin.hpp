@@ -21,8 +21,9 @@ class io_pin_t final : public io_pin_itf {
     // * LL_GPIO_SPEED_FREQ_MEDIUM
     // * LL_GPIO_SPEED_FREQ_HIGH
     // * LL_GPIO_SPEED_FREQ_VERY_HIGH
-    io_pin_t(GPIO_TypeDef* port, uint32_t pin, uint32_t output_type, uint32_t pull, uint32_t speed)
+    io_pin_t(GPIO_TypeDef* port, uint32_t pin, uint32_t output_type, uint32_t pull, uint32_t speed, bool state)
         : _port{port}, _pin{pin} {
+        state ? set() : reset();
         LL_GPIO_SetPinOutputType(port, pin, output_type);
         LL_GPIO_SetPinPull(port, pin, pull);
         LL_GPIO_SetPinSpeed(port, pin, speed);

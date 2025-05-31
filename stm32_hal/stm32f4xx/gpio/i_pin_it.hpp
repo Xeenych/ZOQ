@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ZOQ/itf/gpio/it_pin_itf.hpp"
 #include "ZOQ/itf/gpio/i_pin_itf.hpp"
+#include "ZOQ/itf/gpio/it_pin_itf.hpp"
 #include "stm32f4xx_hal.h"
 
 namespace ZOQ::stm32_hal::stm32f4xx::gpio {
@@ -19,12 +19,18 @@ class i_pin_it_t final : public it_pin_itf, public i_pin_itf {
     //    - GPIO_NOPULL
     //    - GPIO_PULLUP
     //    - GPIO_PULLDOWN
-    i_pin_it_t(GPIO_TypeDef* port, uint32_t pin, uint32_t mode, uint32_t pull) : _port{port}, _pin{pin} {
+    // speed:
+    //    - GPIO_SPEED_FREQ_LOW
+    //    - GPIO_SPEED_FREQ_MEDIUM
+    //    - GPIO_SPEED_FREQ_HIGH
+    //    - GPIO_SPEED_FREQ_VERY_HIGH
+    i_pin_it_t(GPIO_TypeDef* port, uint32_t pin, uint32_t mode, uint32_t pull, uint32_t speed)
+        : _port{port}, _pin{pin} {
         GPIO_InitTypeDef GPIO_InitStruct{};
         GPIO_InitStruct.Pin = pin;
         GPIO_InitStruct.Mode = mode;
         GPIO_InitStruct.Pull = pull;
-        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+        GPIO_InitStruct.Speed = speed;
         HAL_GPIO_Init(port, &GPIO_InitStruct);
     }
     i_pin_it_t(const i_pin_it_t&) = delete;
