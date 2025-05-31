@@ -1,13 +1,15 @@
 #pragma once
 
 #include "ZOQ/itf/gpio/it_pin_itf.hpp"
+#include "ZOQ/itf/gpio/i_pin_itf.hpp"
 #include "stm32f4xx_hal.h"
 
 namespace ZOQ::stm32_hal::stm32f4xx::gpio {
 
+using ZOQ::itf::i_pin_itf;
 using ZOQ::itf::it_pin_itf;
 
-class i_pin_it_t final : public it_pin_itf {
+class i_pin_it_t final : public it_pin_itf, public i_pin_itf {
   public:
     // mode:
     //    - GPIO_MODE_IT_RISING
@@ -30,7 +32,7 @@ class i_pin_it_t final : public it_pin_itf {
 
     void set_callback(const callback_t& cb) override { _callback = cb; }
 
-    [[nodiscard]] bool get() const { return ((_port->IDR & _pin) != GPIO_PIN_RESET); }
+    [[nodiscard]] bool get() const override { return ((_port->IDR & _pin) != GPIO_PIN_RESET); }
 
     ~i_pin_it_t() override { HAL_GPIO_DeInit(_port, _pin); }
 

@@ -1,11 +1,11 @@
 #pragma once
 
-namespace itf {
+namespace ZOQ::itf {
 
 class i_pin_itf {
   public:
-    virtual bool get() = 0;
+    [[nodiscard]] virtual bool get() const = 0;
     virtual ~i_pin_itf() = default;
 };
 
-}  // namespace itf
+}  // namespace ZOQ::itf
