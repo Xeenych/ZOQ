@@ -7,7 +7,7 @@ namespace ZOQ::stm32::stm32f4xx::gpio {
 
 using namespace ZOQ::itf;
 
-class io_pin_it_t final : public it_pin_itf {
+class i_pin_it_t final : public it_pin_itf {
   public:
     // mode:
     //    - GPIO_MODE_IT_RISING
@@ -17,7 +17,7 @@ class io_pin_it_t final : public it_pin_itf {
     //    - GPIO_NOPULL
     //    - GPIO_PULLUP
     //    - GPIO_PULLDOWN
-    io_pin_it_t(const pin_name_t& p, uint32_t mode, uint32_t pull) : _p{p} {
+    i_pin_it_t(const pin_name_t& p, uint32_t mode, uint32_t pull) : _p{p} {
         GPIO_InitTypeDef GPIO_InitStruct{};
         GPIO_InitStruct.Pin = p.pin;
         GPIO_InitStruct.Mode = mode;
@@ -25,16 +25,14 @@ class io_pin_it_t final : public it_pin_itf {
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
         HAL_GPIO_Init(p.port, &GPIO_InitStruct);
     }
-    io_pin_it_t(const io_pin_it_t&) = delete;
-    io_pin_it_t& operator=(const io_pin_it_t&) = delete;
+    i_pin_it_t(const i_pin_it_t&) = delete;
+    i_pin_it_t& operator=(const i_pin_it_t&) = delete;
 
     void set_callback(const callback_t& cb) override { _callback = cb; }
 
-    constexpr void set() const { _p.port->BSRR = _p.pin; }
-    constexpr void reset() const { _p.port->BSRR = (_p.pin << 16U); }
     [[nodiscard]] bool get() const { return ((_p.port->IDR & _p.pin) != GPIO_PIN_RESET); }
 
-    ~io_pin_it_t() override { HAL_GPIO_DeInit(_p.port, _p.pin); }
+    ~i_pin_it_t() override { HAL_GPIO_DeInit(_p.port, _p.pin); }
 
     void EXTI_IRQHandler() { _callback.Execute(); }
 
