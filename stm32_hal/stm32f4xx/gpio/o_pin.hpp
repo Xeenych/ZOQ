@@ -7,13 +7,12 @@
 
 namespace ZOQ::stm32_hal::stm32f4xx::gpio {
 
-class o_pin_t : public itf::o_pin_itf {
+using ZOQ::itf::o_pin_itf;
+
+class o_pin_t : public o_pin_itf {
   public:
     o_pin_t(GPIO_TypeDef* port, uint32_t pin, bool state) : _port{port}, _pin{pin} {
-        if (state)
-            set();
-        else
-            reset();
+        state ? set() : reset();
 
         GPIO_InitTypeDef GPIO_InitStruct{};
         GPIO_InitStruct.Pin = pin;
