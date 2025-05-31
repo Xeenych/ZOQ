@@ -37,8 +37,8 @@ class i_pin_it_t final : public it_pin_itf {
     void EXTI_IRQHandler() { _callback.Execute(); }
 
   private:
-    GPIO_TypeDef* _port;
-    uint32_t _pin;
+    GPIO_TypeDef* const _port;
+    const uint32_t _pin;
     callback_t _callback{};
 };
 

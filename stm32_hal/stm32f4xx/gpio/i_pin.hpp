@@ -1,14 +1,13 @@
 #pragma once
 
 #include "ZOQ/itf/gpio/i_pin_itf.hpp"
-#include "pin_name.hpp"
 #include "stm32f4xx_hal.h"
 
 namespace ZOQ::stm32_hal::stm32f4xx::gpio {
 
 class i_pin_t final : public itf::i_pin_itf {
   public:
-    constexpr i_pin_t(const pin_name_t& p) : _port(p.port), _pin(p.pin) {}
+    constexpr i_pin_t(GPIO_TypeDef* port, uint32_t pin) : _port{port}, _pin{pin} {}
 
     i_pin_t(const i_pin_t&) = delete;
     i_pin_t& operator=(const i_pin_t&) = delete;
@@ -23,8 +22,8 @@ class i_pin_t final : public itf::i_pin_itf {
     }
 
   private:
-    GPIO_TypeDef* const _port = nullptr;
-    const uint32_t _pin = 0;
+    GPIO_TypeDef* const _port;
+    const uint32_t _pin;
 };
 
 }  // namespace ZOQ::stm32_hal::stm32f4xx::gpio

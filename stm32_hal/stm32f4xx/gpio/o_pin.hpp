@@ -3,26 +3,24 @@
 #include <cstdint>
 
 #include "ZOQ/itf/gpio/o_pin_itf.hpp"
-#include "ZOQ/stm32/stm32f4xx/gpio/pin_name.hpp"
-#include "stm32f4xx_hal_gpio.h"
+#include "stm32f4xx_hal.h"
 
 namespace ZOQ::stm32_hal::stm32f4xx::gpio {
-using namespace ZOQ::stm32::stm32f4xx::gpio;
 
 class o_pin_t : public itf::o_pin_itf {
   public:
-    o_pin_t(const pin_name_t& p, bool state) : _port(p.port), _pin(p.pin) {
+    o_pin_t(GPIO_TypeDef* port, uint32_t pin, bool state) : _port{port}, _pin{pin} {
         if (state)
             set();
         else
             reset();
 
         GPIO_InitTypeDef GPIO_InitStruct{};
-        GPIO_InitStruct.Pin = p.pin;
+        GPIO_InitStruct.Pin = pin;
         GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
         GPIO_InitStruct.Pull = GPIO_NOPULL;
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-        HAL_GPIO_Init(p.port, &GPIO_InitStruct);
+        HAL_GPIO_Init(port, &GPIO_InitStruct);
     }
     constexpr void set() override { _port->BSRR = _pin; }
     constexpr void reset() override { _port->BSRR = (_pin << 16U); }
@@ -33,8 +31,8 @@ class o_pin_t : public itf::o_pin_itf {
     o_pin_t& operator=(const o_pin_t&) = delete;
 
   private:
-    GPIO_TypeDef* const _port = nullptr;
-    const uint32_t _pin = 0;
+    GPIO_TypeDef* const _port;
+    const uint32_t _pin;
 };
 
 }  // namespace ZOQ::stm32_hal::stm32f4xx::gpio
