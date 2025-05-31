@@ -1,10 +1,10 @@
 #pragma once
 
-#include "itf/i_pin_itf.hpp"
+#include "ZOQ/itf/gpio/i_pin_itf.hpp"
 #include "pin_name.hpp"
 #include "stm32f4xx_hal.h"
 
-namespace stm32f4xx::gpio {
+namespace ZOQ::stm32_hal::stm32f4xx::gpio {
 
 class i_pin_t final : public itf::i_pin_itf {
   public:
@@ -13,9 +13,8 @@ class i_pin_t final : public itf::i_pin_itf {
     i_pin_t(const i_pin_t&) = delete;
     i_pin_t& operator=(const i_pin_t&) = delete;
 
-    bool get() override { return ((_port->IDR & _pin) != (uint32_t)GPIO_PIN_RESET); }
-    void deinit()
-    {
+    bool get() override { return ((_port->IDR & _pin) != static_cast<uint32_t>(GPIO_PIN_RESET)); }
+    void deinit() {
         GPIO_InitTypeDef GPIO_InitStruct{};
         GPIO_InitStruct.Pin = _pin;
         GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -28,4 +27,4 @@ class i_pin_t final : public itf::i_pin_itf {
     const uint32_t _pin = 0;
 };
 
-}  // namespace stm32f4xx::gpio
+}  // namespace ZOQ::stm32_hal::stm32f4xx::gpio

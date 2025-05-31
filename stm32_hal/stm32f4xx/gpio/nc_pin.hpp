@@ -5,7 +5,7 @@
 #include "pin_name.hpp"
 #include "stm32f4xx_hal.h"
 
-namespace stm32f4xx::gpio {
+namespace ZOQ::stm32_hal::stm32f4xx::gpio {
 
 class nc_pin_t final : public itf::o_pin_itf, public itf::i_pin_it_itf {
   public:
@@ -19,4 +19,4 @@ class nc_pin_t final : public itf::o_pin_itf, public itf::i_pin_it_itf {
   private:
 };
 
-}  // namespace stm32f4xx::gpio
+}  // namespace ZOQ::stm32_hal::stm32f4xx::gpio
