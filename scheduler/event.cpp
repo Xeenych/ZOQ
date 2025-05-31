@@ -1,15 +1,10 @@
 #include "event.hpp"
 
 #include "sys/irq_utils.hpp"
-#include "sys/logging.hpp"
 
 namespace ZOQ {
 
-
-event_t::~event_t() {
-    // NOT implemented
-    //_s.remove(this);
-}
+event_t::~event_t() { _s.remove(this); }
 
 void event_t::tick() {
     if (0 == _ctr)  // timer disarmed
@@ -30,7 +25,7 @@ void event_t::arm(uint32_t ctr, uint32_t interval) {
     _expiring = false;
 }
 
-void event_t::disarm(void) {
+void event_t::disarm() {
     critical_section_t s;
     _ctr = 0U;
     _interval = 0U;

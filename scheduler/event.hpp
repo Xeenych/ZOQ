@@ -22,7 +22,7 @@ class event_t {
     // arm(100, 500) - выполнить событие черз 100 тиков, а потом выполнять каждые 500 тиков
     void arm(uint32_t ctr, uint32_t interval);
     void disarm();
-    bool armed() const { return (0 != _ctr); }
+    [[nodiscard]] bool armed() const { return (0 != _ctr); }
 
     // call this on SysTick interrupt
     void tick();
@@ -34,7 +34,7 @@ class event_t {
     }
     void execute() const { _cb.Execute(); }
 
-    event_t* next() const { return _next; }
+    [[nodiscard]] event_t* next() const { return _next; }
     void set_next(event_t* e) { _next = e; }
 
     event_t(const event_t&) = delete;

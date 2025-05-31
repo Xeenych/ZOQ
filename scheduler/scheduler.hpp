@@ -4,6 +4,8 @@
 #include "ZOQ/scheduler/event.hpp"
 #include "ZOQ/scheduler/scheduler_itf.hpp"
 
+#include <cassert>
+
 namespace ZOQ::scheduler {
 
 using ZOQ::itf::it_timer_itf;
@@ -43,6 +45,25 @@ class scheduler_t : public scheduler_itf {
     void add(event_t* e) override {
         e->set_next(_head);
         _head = e;
+    }
+
+    void remove(event_t* e) override {
+        // List contains one element
+        if (_head == e) {
+            _head = _head->next();
+            return;
+        }
+
+        auto* o = _head;
+        auto* prev = o;
+        for (; o != nullptr; o = o->next()) {
+            if (o == e) {
+                prev->set_next(o->next());
+                return;
+            }
+            prev = o;
+        }
+        assert(false);
     }
 
   private:
