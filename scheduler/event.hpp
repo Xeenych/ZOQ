@@ -45,9 +45,9 @@ class event_t {
     const callback_t _cb;
     bool _expiring = false;
 
-    event_t* _next = nullptr;  //! link to next time event in a link-list
-    uint32_t _ctr = 0;         //! time event down-counter
-    uint32_t _interval = 0;    //! interval for periodic time event
+    event_t* _next = nullptr;        //! link to next time event in a link-list
+    std::atomic<uint32_t> _ctr = 0;  //! time event down-counter
+    uint32_t _interval = 0;          //! interval for periodic time event
 };
 
 class oneshot_event_t {
